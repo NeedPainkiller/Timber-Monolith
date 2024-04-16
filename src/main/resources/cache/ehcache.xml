@@ -1,0 +1,128 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.ehcache.org/v3"
+        xsi:schemaLocation="http://www.ehcache.org/v3 http://www.ehcache.org/schema/ehcache-core-3.0.xsd">
+    <cache-template name="cacheTemplate">
+        <expiry> <!-- expiry는 캐시 만료기간에 대해 설정하는 요소이다. -->
+            <ttl unit="seconds">5</ttl>
+            <!-- ttl에는 캐시 만료 시간을 지정하며 unit에는 단위를 지정한다. 해당 요소는 300초 뒤 캐시가 만료되는 것으로 지정되어 있다. -->
+            <!-- unit은 days, hours, minutes, seconds, millis, micros, nanos 를 세팅할 수 있다. -->
+        </expiry>
+        <listeners> <!-- listeners는 Cache의 리스너를 등록하는 요소이다. -->
+            <listener>
+                <class>xyz.needpainkiller.config.cache.EhCacheEventLogger
+                </class> <!-- 캐싱처리에 대한 리스너가 등록된 클래스의 FQCN을 등록한다. -->
+                <event-firing-mode>ASYNCHRONOUS</event-firing-mode>
+                <event-ordering-mode>UNORDERED</event-ordering-mode>
+                <events-to-fire-on>CREATED</events-to-fire-on>
+                <events-to-fire-on>EXPIRED</events-to-fire-on>
+            </listener>
+        </listeners>
+        <resources> <!-- resources는 캐시 데이터의 저장 공간과 용량을 지정한다. 만약 힙 메모리만 사용한다면 <heap> 요소만으로 대체할 수 있다.  -->
+            <!--            <heap unit="entries">100</heap> -->
+            <!-- heap은 JVM 힙 메모리에 캐시를 저장하도록 세팅하는 요소이다. -->
+            <offheap unit="MB">5</offheap>
+            <!-- offheap은 JVM 힙 메모리 외부의 메모리에 캐시를 저장하도록 세팅하는 요소이다. -->
+            <!--       offheap은     -XX:MaxDirectMemorySize  추가 필요 -->
+        </resources>
+    </cache-template>
+
+    <!--유저 / 권한-->
+    <cache alias="User" uses-template="cacheTemplate">
+        <key-type>java.lang.String</key-type>
+        <value-type>xyz.needpainkiller.api.user.model.UserEntity</value-type>
+    </cache>
+    <cache alias="UserList" uses-template="cacheTemplate">
+        <key-type>java.lang.String</key-type>
+        <value-type>java.util.List</value-type>
+    </cache>
+    <cache alias="UserRole" uses-template="cacheTemplate">
+        <key-type>java.lang.String</key-type>
+        <value-type>java.util.List</value-type>
+    </cache>
+    <cache alias="UserProfile" uses-template="cacheTemplate">
+        <key-type>java.lang.String</key-type>
+        <value-type>xyz.needpainkiller.base.user.dto.UserProfile</value-type>
+    </cache>
+    <cache alias="UserProfileList" uses-template="cacheTemplate">
+        <key-type>java.lang.String</key-type>
+        <value-type>java.util.List</value-type>
+    </cache>
+    <cache alias="Role" uses-template="cacheTemplate">
+        <key-type>java.lang.String</key-type>
+        <value-type>xyz.needpainkiller.api.user.model.RoleEntity</value-type>
+    </cache>
+    <cache alias="RoleList" uses-template="cacheTemplate">
+        <key-type>java.lang.String</key-type>
+        <value-type>java.util.List</value-type>
+    </cache>
+    <cache alias="RoleAuthorityList" uses-template="cacheTemplate">
+        <key-type>java.lang.String</key-type>
+        <value-type>java.util.List</value-type>
+    </cache>
+
+    <!--접근권한-->
+    <cache alias="Api" uses-template="cacheTemplate">
+        <key-type>java.lang.String</key-type>
+        <value-type>xyz.needpainkiller.api.authentication.model.ApiEntity</value-type>
+        <expiry>
+            <ttl unit="seconds">30</ttl>
+        </expiry>
+    </cache>
+    <cache alias="ApiList" uses-template="cacheTemplate">
+        <key-type>java.lang.String</key-type>
+        <value-type>java.util.List</value-type>
+        <expiry>
+            <ttl unit="seconds">30</ttl>
+        </expiry>
+    </cache>
+    <cache alias="ApiRoleList" uses-template="cacheTemplate">
+        <key-type>java.lang.String</key-type>
+        <value-type>java.util.List</value-type>
+        <expiry>
+            <ttl unit="seconds">30</ttl>
+        </expiry>
+    </cache>
+    <cache alias="Menu" uses-template="cacheTemplate">
+        <key-type>java.lang.String</key-type>
+        <value-type>xyz.needpainkiller.api.authentication.model.MenuEntity</value-type>
+        <expiry>
+            <ttl unit="seconds">30</ttl>
+        </expiry>
+    </cache>
+    <cache alias="MenuList" uses-template="cacheTemplate">
+        <key-type>java.lang.String</key-type>
+        <value-type>java.util.List</value-type>
+        <expiry>
+            <ttl unit="seconds">30</ttl>
+        </expiry>
+    </cache>
+    <cache alias="DivisionList" uses-template="cacheTemplate">
+        <key-type>java.lang.String</key-type>
+        <value-type>java.util.List</value-type>
+        <expiry>
+            <ttl unit="seconds">30</ttl>
+        </expiry>
+    </cache>
+
+    <!--팀-->
+    <cache alias="Team" uses-template="cacheTemplate">
+        <key-type>java.lang.String</key-type>
+        <value-type>xyz.needpainkiller.api.team.model.TeamEntity</value-type>
+    </cache>
+
+    <cache alias="TeamList" uses-template="cacheTemplate">
+        <key-type>java.lang.String</key-type>
+        <value-type>java.util.List</value-type>
+    </cache>
+
+    <!--테넌트-->
+    <cache alias="Tenant" uses-template="cacheTemplate">
+        <key-type>java.lang.String</key-type>
+        <value-type>xyz.needpainkiller.api.tenant.model.TenantEntity</value-type>
+    </cache>
+
+    <cache alias="TenantList" uses-template="cacheTemplate">
+        <key-type>java.lang.String</key-type>
+        <value-type>java.util.List</value-type>
+    </cache>
+</config>

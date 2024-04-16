@@ -1,0 +1,28 @@
+spring:
+  config.active.on-profile: ehcache
+  jpa:
+    hibernate:
+      cache:
+        use_second_level_cache: true
+        use_query_cache: true
+    properties:
+      hibernate:
+        cache:
+          use_second_level_cache: true
+          use_query_cache: true
+          provider: org.ehcache.jsr107.EhcacheCachingProvider
+          region:
+            factory_class: org.springframework.cache.jcache.JCacheManagerFactoryBean
+        javax.cache:
+          provider: org.ehcache.jsr107.EhcacheCachingProvider
+  #            uri: classpath:cache/ehcache.xml
+
+  cache:
+    type: jcache
+    ehcache.config: classpath:cache/ehcache.xml
+
+#  autoconfigure:
+#    exclude:
+#      - org.springframework.boot.autoconfigure.cache.JCacheCacheConfiguration
+
+javax.cache.spi.CachingProvider: org.ehcache.jsr107.EhcacheCachingProvider

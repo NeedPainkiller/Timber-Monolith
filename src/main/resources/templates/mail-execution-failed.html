@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+</head>
+<body>
+<span>EXECUTION ID : </span> <span th:text="${executionID}"></span>
+<br><br>
+<span>과제명 : </span> <span th:text="${task}"></span>
+<br><br>
+<span>수행 봇 : </span> <span th:text="${agent}"></span>
+<br><br>
+<span>에러 발생 시간 : </span> <span th:text="${datetime}"></span>
+<br><br>
+<span>에러 메세지 : </span> <span th:text="${error}"></span>
+</body>
+</html>

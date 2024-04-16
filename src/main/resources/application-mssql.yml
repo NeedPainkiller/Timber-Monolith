@@ -1,0 +1,21 @@
+spring:
+  config.active.on-profile: mssql
+  datasource:
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    driver-Class-Name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
+  jpa:
+    hibernate:
+      dialect: org.hibernate.dialect.SQLServer2012Dialect
+      database-platform: org.hibernate.dialect.SQLServer2012Dialect
+
+  quartz:
+    jobStore:
+      driverDelegateClass: org.quartz.impl.jdbcjobstore.MSSQLDelegate
+      #        driverDelegateClass: com.hannonhill.cascade.model.quartz.PatchedMSSQLDelegate
+      #        lockHandler.selectWithLockSQL: SELECT * FROM {0}LOCKS UPDLOCK WHERE LOCK_NAME = @lockName
+      lockHandler.selectWithLockSQL: SELECT LOCK_NAME FROM {0}LOCKS WITH (ROWLOCK, UPDLOCK) WHERE LOCK_NAME=?
+    properties.org.quartz.jobStore:
+      driverDelegateClass: org.quartz.impl.jdbcjobstore.MSSQLDelegate
+      #        lockHandler.selectWithLockSQL: SELECT * FROM {0}LOCKS UPDLOCK WHERE LOCK_NAME = @lockName
+      lockHandler.selectWithLockSQL: SELECT LOCK_NAME FROM {0}LOCKS WITH (ROWLOCK, UPDLOCK) WHERE LOCK_NAME=?

@@ -1,0 +1,28 @@
+spring:
+  config.active.on-profile: mysql
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-Class-Name: com.mysql.cj.jdbc.Driver
+    driverClassName: com.mysql.cj.jdbc.Driver
+
+  sql:
+    init:
+      platform: mysql
+      schema: classpath:/sql/mysql-schema.sql
+      data: classpath:/sql/mysql-data.sql
+      mode: always
+
+  jpa:
+    hibernate:
+      dialect: org.hibernate.dialect.MySQL8Dialect
+      database-platform: org.hibernate.dialect.MySQL8Dialect
+      dialect.storage_engine: innodb
+
+  quartz:
+    jobStore:
+      driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+      lockHandler.selectWithLockSQL: SELECT * FROM {0}LOCKS WHERE LOCK_NAME = ? FOR UPDATE
+    #      lockHandler.selectWithLockSQL: SELECT * FROM {0}LOCKS WHERE LOCK_NAME = ?
+    properties.org.quartz.jobStore:
+      driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+      lockHandler.selectWithLockSQL: SELECT * FROM {0}LOCKS WHERE LOCK_NAME = ? FOR UPDATE

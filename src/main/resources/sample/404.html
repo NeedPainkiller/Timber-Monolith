@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="utf-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=1280" name="viewport">
+    <meta content="" name="description">
+    <meta content="" name="author">
+    <title>404</title>
+    <link href="static/rainbow-brain.png" rel="icon">
+
+    <style>
+        * {
+            transition: all 0.6s;
+        }
+
+        html {
+            height: 100%;
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            color: #0067ac !important;
+            margin: 0;
+        }
+
+        #main {
+            display: table;
+            width: 100%;
+            height: 100vh;
+            text-align: center;
+        }
+
+        .fof {
+            display: table-cell;
+            vertical-align: middle;
+        }
+
+        .fof h1 {
+            font-size: 50px;
+            display: inline-block;
+            padding-right: 12px;
+            animation: type .5s alternate infinite;
+        }
+
+        @keyframes type {
+            from {
+                box-shadow: inset -3px 0px 0px #888;
+            }
+            to {
+                box-shadow: inset -3px 0px 0px transparent;
+            }
+        }
+
+
+    </style>
+    <script>
+
+        window.setTimeout(function () {
+
+            // Move to a new location or you can do something else
+            window.location.href = "/index.html";
+
+        }, 3000);
+
+
+    </script>
+</head>
+<body class="bg-primary">
+<div class="container">
+    <div class="row justify-content-center">
+        <div id="main">
+            <div class="fof">
+                <h1>Error 404</h1>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

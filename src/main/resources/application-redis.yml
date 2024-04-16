@@ -1,0 +1,45 @@
+spring:
+  config.active.on-profile: redis
+  jpa:
+    hibernate:
+      cache:
+        use_second_level_cache: true
+        use_query_cache: true
+    properties:
+      hibernate:
+        cache:
+          use_second_level_cache: true
+          use_query_cache: true
+          #          provider: org.redisson.jcache.JCachingProvider
+          region:
+            factory_class: org.redisson.hibernate.RedissonRegionFactory
+        javax.cache:
+          provider: org.redisson.jcache.JCachingProvider
+
+  cache:
+    type: redis
+
+  redis:
+    active: yes
+    database: timber-cache
+    cluster:
+      enable: true
+    #    host:
+    #    port:
+    #    password:
+    ssl: false
+    timeout: 3000
+    connectTimeout: 10000
+    clientName: timber
+
+  data:
+    redis.repositories.enabled: true
+
+#  autoconfigure:
+#    exclude:
+#      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+#      - org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
+
+
+#javax.cache.spi.CachingProvider: org.redisson.jcache.JCachingProvider
+javax.cache.spi.CachingProvider: JCachingProvider

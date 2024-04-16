@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+</head>
+<body>
+<span>과제명 : </span> <span th:text="${task}"></span>
+<br><br>
+<span>수행 봇 : </span> <span th:text="${agent}"></span>
+<br><br>
+<span>에러 발생 시간 : </span> <span th:text="${datetime}"></span>
+<br><br>
+<span>에러 메세지 : </span> <span th:text="${error}"></span>
+<br><br>
+<!--https://aa360-252.metabot.pro/#/activity/historical/e3c2c339-f7a9-4fa9-b615-228304714d01/view-->
+<a th:href="${executionID}">AA360 Control Room 에서 확인하기</a>
+<br><br>
+
+</body>
+</html>
