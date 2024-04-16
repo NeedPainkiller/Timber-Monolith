@@ -12,23 +12,19 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.RestController;
-import xyz.needpainkiller.api.authentication.model.ApiEntity;
-import xyz.needpainkiller.api.authentication.model.DivisionEntity;
-import xyz.needpainkiller.api.authentication.model.MenuEntity;
-import xyz.needpainkiller.api.team.model.TeamEntity;
-import xyz.needpainkiller.api.tenant.model.TenantEntity;
-import xyz.needpainkiller.api.user.model.RoleEntity;
-import xyz.needpainkiller.api.user.model.UserEntity;
-import xyz.needpainkiller.base.audit.AuditService;
-import xyz.needpainkiller.base.authentication.AuthenticationService;
-import xyz.needpainkiller.base.authentication.AuthorizationService;
-import xyz.needpainkiller.base.authentication.dto.AuthenticationRequests;
-import xyz.needpainkiller.base.authentication.error.LoginException;
-import xyz.needpainkiller.base.tenant.TenantService;
-import xyz.needpainkiller.base.tenant.model.Tenant;
-import xyz.needpainkiller.base.user.UserService;
-import xyz.needpainkiller.base.user.dto.UserProfile;
-import xyz.needpainkiller.base.user.model.SecurityUser;
+import xyz.needpainkiller.api.audit.AuditService;
+import xyz.needpainkiller.api.authentication.dto.AuthenticationRequests;
+import xyz.needpainkiller.api.authentication.error.LoginException;
+import xyz.needpainkiller.api.authentication.model.Api;
+import xyz.needpainkiller.api.authentication.model.Division;
+import xyz.needpainkiller.api.team.model.Team;
+import xyz.needpainkiller.api.tenant.TenantService;
+import xyz.needpainkiller.api.tenant.model.Tenant;
+import xyz.needpainkiller.api.user.UserService;
+import xyz.needpainkiller.api.user.dto.UserProfile;
+import xyz.needpainkiller.api.user.model.Role;
+import xyz.needpainkiller.api.user.model.SecurityUser;
+import xyz.needpainkiller.api.user.model.User;
 import xyz.needpainkiller.common.controller.CommonController;
 import xyz.needpainkiller.lib.exceptions.ErrorCode;
 
@@ -49,13 +45,13 @@ public class AuthenticationController extends CommonController implements Authen
     @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired
-    private AuthenticationService<UserEntity, RoleEntity> authenticationService;
+    private AuthenticationService authenticationService;
     @Autowired
-    private AuthorizationService<DivisionEntity, MenuEntity, ApiEntity, RoleEntity> authorizationService;
+    private AuthorizationService authorizationService;
     @Autowired
-    private UserService<UserEntity, RoleEntity, TeamEntity> userService;
+    private UserService userService;
     @Autowired
-    private TenantService<TenantEntity> tenantService;
+    private TenantService tenantService;
 
     public ResponseEntity<Map<String, Object>> login(AuthenticationRequests.LoginRequest param, HttpServletRequest request, HttpServletResponse response) throws LoginException {
 
@@ -75,16 +71,13 @@ public class AuthenticationController extends CommonController implements Authen
         userId = userId.trim();
         userPwd = userPwd.trim();
 
-        SecurityUser<UserEntity, RoleEntity> securityUser;
-        UserEntity user = userService.selectUserByUserId(tenant, userId);
+        SecurityUser securityUser;
+        User user = userService.selectUserByUserId(tenant, userId);
 
         try {
             String loginData = String.format("%d/%s", tenantPk, userId);
-            log.info("loginData: {}", loginData);
             UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(loginData, userPwd);
-            log.info("token: {}", token);
             Authentication authentication = authenticationManager.authenticate(token);
-            log.info("authentication: {}", authentication);
             securityUser = (SecurityUser) authentication.getPrincipal();
         } catch (AuthenticationException e) {
             userService.increaseLoginFailedCnt(user.getId());
@@ -94,17 +87,17 @@ public class AuthenticationController extends CommonController implements Authen
         user = securityUser.getUser();
         Map<String, Object> model = new HashMap<>();
         try {
-            UserProfile<UserEntity, RoleEntity, TeamEntity> userProfile = userService.selectUserProfile(user);
+            UserProfile userProfile = userService.selectUserProfile(user);
             model.put(KEY_USER, user);
-            TeamEntity team = userProfile.getTeam();
+            Team team = userProfile.getTeam();
             model.put(KEY_TEAM, team);
-            List<RoleEntity> roleList = userProfile.getRoleList();
+            List<Role> roleList = userProfile.getRoleList();
             model.put(KEY_ROLE_LIST, roleList);
-            List<DivisionEntity> divisionList = authorizationService.selectDivisionByRoleList(roleList);
+            List<Division> divisionList = authorizationService.selectDivisionByRoleList(roleList);
             model.put(KEY_MENU_LIST, divisionList);
-            List<ApiEntity> apiList = authorizationService.selectApiListByRoleList(roleList);
+            List<Api> apiList = authorizationService.selectApiListByRoleList(roleList);
             model.put(KEY_API_LIST, apiList);
-            List<ApiEntity> publicApiList = authorizationService.selectPublicApiList();
+            List<Api> publicApiList = authorizationService.selectPublicApiList();
             model.put(KEY_PUBLIC_API_LIST, publicApiList);
 
             auditService.insertLoginAuditLog(request, userProfile);

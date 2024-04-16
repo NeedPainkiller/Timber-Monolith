@@ -7,13 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-import xyz.needpainkiller.api.team.model.TeamEntity;
-import xyz.needpainkiller.base.authentication.AuthenticationService;
-import xyz.needpainkiller.base.team.TeamService;
-import xyz.needpainkiller.base.team.dto.TeamRequests;
-import xyz.needpainkiller.base.team.model.Team;
-import xyz.needpainkiller.base.tenant.error.TenantException;
-import xyz.needpainkiller.base.user.model.User;
+import xyz.needpainkiller.api.authentication.AuthenticationService;
+import xyz.needpainkiller.api.team.dto.TeamRequests;
+import xyz.needpainkiller.api.team.model.Team;
+import xyz.needpainkiller.api.tenant.error.TenantException;
+import xyz.needpainkiller.api.user.model.User;
 import xyz.needpainkiller.common.controller.CommonController;
 
 import java.util.HashMap;
@@ -22,7 +20,7 @@ import java.util.Map;
 
 import static org.springframework.http.ResponseEntity.ok;
 import static org.springframework.http.ResponseEntity.status;
-import static xyz.needpainkiller.base.tenant.error.TenantErrorCode.TENANT_CONFLICT;
+import static xyz.needpainkiller.api.tenant.error.TenantErrorCode.TENANT_CONFLICT;
 
 @Slf4j
 @RestController
@@ -31,13 +29,13 @@ public class TeamController extends CommonController implements TeamApi {
     @Autowired
     protected AuthenticationService authenticationService;
     @Autowired
-    private TeamService<TeamEntity> teamService;
+    private TeamService teamService;
 
     @Override
     public ResponseEntity<Map<String, Object>> selectTeamList(HttpServletRequest request) {
         Map<String, Object> model = new HashMap<>();
         Long tenantPk = authenticationService.getTenantPkByToken(request);
-        List<TeamEntity> teamList = teamService.selectTeamList(tenantPk);
+        List<Team> teamList = teamService.selectTeamList(tenantPk);
         model.put(KEY_LIST, teamList);
         model.put(KEY_TOTAL, teamList.size());
         return ok(model);

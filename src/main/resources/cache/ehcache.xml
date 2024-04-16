@@ -29,7 +29,7 @@
     <!--유저 / 권한-->
     <cache alias="User" uses-template="cacheTemplate">
         <key-type>java.lang.String</key-type>
-        <value-type>xyz.needpainkiller.api.user.model.UserEntity</value-type>
+        <value-type>xyz.needpainkiller.api.user.model.User</value-type>
     </cache>
     <cache alias="UserList" uses-template="cacheTemplate">
         <key-type>java.lang.String</key-type>
@@ -41,7 +41,7 @@
     </cache>
     <cache alias="UserProfile" uses-template="cacheTemplate">
         <key-type>java.lang.String</key-type>
-        <value-type>xyz.needpainkiller.base.user.dto.UserProfile</value-type>
+        <value-type>xyz.needpainkiller.api.user.dto.UserProfile</value-type>
     </cache>
     <cache alias="UserProfileList" uses-template="cacheTemplate">
         <key-type>java.lang.String</key-type>
@@ -49,7 +49,7 @@
     </cache>
     <cache alias="Role" uses-template="cacheTemplate">
         <key-type>java.lang.String</key-type>
-        <value-type>xyz.needpainkiller.api.user.model.RoleEntity</value-type>
+        <value-type>xyz.needpainkiller.api.user.model.Role</value-type>
     </cache>
     <cache alias="RoleList" uses-template="cacheTemplate">
         <key-type>java.lang.String</key-type>
@@ -63,7 +63,7 @@
     <!--접근권한-->
     <cache alias="Api" uses-template="cacheTemplate">
         <key-type>java.lang.String</key-type>
-        <value-type>xyz.needpainkiller.api.authentication.model.ApiEntity</value-type>
+        <value-type>xyz.needpainkiller.api.authentication.model.Api</value-type>
         <expiry>
             <ttl unit="seconds">30</ttl>
         </expiry>
@@ -84,7 +84,7 @@
     </cache>
     <cache alias="Menu" uses-template="cacheTemplate">
         <key-type>java.lang.String</key-type>
-        <value-type>xyz.needpainkiller.api.authentication.model.MenuEntity</value-type>
+        <value-type>xyz.needpainkiller.api.authentication.model.Menu</value-type>
         <expiry>
             <ttl unit="seconds">30</ttl>
         </expiry>
@@ -107,7 +107,7 @@
     <!--팀-->
     <cache alias="Team" uses-template="cacheTemplate">
         <key-type>java.lang.String</key-type>
-        <value-type>xyz.needpainkiller.api.team.model.TeamEntity</value-type>
+        <value-type>xyz.needpainkiller.api.team.model.Team</value-type>
     </cache>
 
     <cache alias="TeamList" uses-template="cacheTemplate">
@@ -118,7 +118,7 @@
     <!--테넌트-->
     <cache alias="Tenant" uses-template="cacheTemplate">
         <key-type>java.lang.String</key-type>
-        <value-type>xyz.needpainkiller.api.tenant.model.TenantEntity</value-type>
+        <value-type>xyz.needpainkiller.api.tenant.model.Tenant</value-type>
     </cache>
 
     <cache alias="TenantList" uses-template="cacheTemplate">

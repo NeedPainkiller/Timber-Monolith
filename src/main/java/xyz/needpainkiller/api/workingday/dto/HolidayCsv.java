@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import xyz.needpainkiller.base.workingday.model.Holiday;
+import xyz.needpainkiller.api.workingday.model.Holiday;
 import xyz.needpainkiller.helper.TimeHelper;
 
 import java.io.Serial;

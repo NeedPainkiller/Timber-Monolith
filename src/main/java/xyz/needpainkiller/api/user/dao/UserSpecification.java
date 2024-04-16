@@ -4,10 +4,10 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import jakarta.persistence.criteria.Subquery;
 import org.springframework.data.jpa.domain.Specification;
-import xyz.needpainkiller.api.user.model.UserEntity;
-import xyz.needpainkiller.api.user.model.UserRoleMapEntity;
-import xyz.needpainkiller.base.team.model.Team;
-import xyz.needpainkiller.base.user.dto.UserRequests;
+import xyz.needpainkiller.api.team.model.Team;
+import xyz.needpainkiller.api.user.dto.UserRequests;
+import xyz.needpainkiller.api.user.model.User;
+import xyz.needpainkiller.api.user.model.UserRoleMap;
 import xyz.needpainkiller.common.dto.DateType;
 
 import java.sql.Timestamp;
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserSpecification {
-    public static Specification<UserEntity> search(UserRequests.SearchUserRequest params) {
+    public static Specification<User> search(UserRequests.SearchUserRequest params) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicateList = new ArrayList<>();
 
@@ -32,8 +32,8 @@ public class UserSpecification {
 
             Long rolePk = params.getRolePk();
             if (rolePk != null) {
-                Subquery<UserRoleMapEntity> subUserRoleMapQuery = query.subquery(UserRoleMapEntity.class);
-                Root<UserRoleMapEntity> subUserRoleMapQueryRoot = subUserRoleMapQuery.from(UserRoleMapEntity.class);
+                Subquery<UserRoleMap> subUserRoleMapQuery = query.subquery(UserRoleMap.class);
+                Root<UserRoleMap> subUserRoleMapQueryRoot = subUserRoleMapQuery.from(UserRoleMap.class);
 
                 Predicate rolePkPredicate = criteriaBuilder.equal(subUserRoleMapQueryRoot.get("rolePk"), rolePk);
                 subUserRoleMapQuery.select(subUserRoleMapQueryRoot.get("userPk")).where(rolePkPredicate);

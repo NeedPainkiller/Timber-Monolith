@@ -1,17 +1,17 @@
 package xyz.needpainkiller.api.user.dao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import xyz.needpainkiller.api.user.model.UserRoleMapEntity;
+import xyz.needpainkiller.api.user.model.UserRoleMap;
 import xyz.needpainkiller.api.user.model.UserRoleMapId;
 
 import java.util.List;
 
-public interface UserRoleMapRepo extends JpaRepository<UserRoleMapEntity, UserRoleMapId> {
-    List<UserRoleMapEntity> findByUserPk(Long userPk);
+public interface UserRoleMapRepo extends JpaRepository<UserRoleMap, UserRoleMapId> {
+    List<UserRoleMap> findByUserPk(Long userPk);
 
-    List<UserRoleMapEntity> findByUserPkIn(List<Long> userPkList);
+    List<UserRoleMap> findByUserPkIn(List<Long> userPkList);
 
-    List<UserRoleMapEntity> findByRolePk(Long rolePk);
+    List<UserRoleMap> findByRolePk(Long rolePk);
 
-    List<UserRoleMapEntity> findByRolePkIn(List<Long> rolePkList);
+    List<UserRoleMap> findByRolePkIn(List<Long> rolePkList);
 }

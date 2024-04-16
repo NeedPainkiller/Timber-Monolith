@@ -11,8 +11,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import xyz.needpainkiller.base.file.error.FileErrorCode;
-import xyz.needpainkiller.base.file.error.FileException;
+import xyz.needpainkiller.api.file.error.FileErrorCode;
+import xyz.needpainkiller.api.file.error.FileException;
 
 import java.io.*;
 import java.util.Collection;

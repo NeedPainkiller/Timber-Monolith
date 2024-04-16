@@ -6,8 +6,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
-import xyz.needpainkiller.base.user.model.Role;
-import xyz.needpainkiller.base.user.model.User;
+import xyz.needpainkiller.api.user.model.Role;
+import xyz.needpainkiller.api.user.model.User;
 import xyz.needpainkiller.helper.TimeHelper;
 import xyz.needpainkiller.lib.security.JwtDoubleChecker;
 import xyz.needpainkiller.lib.security.error.TokenValidFailedException;
@@ -25,7 +25,7 @@ import static xyz.needpainkiller.lib.exceptions.CommonErrorCode.*;
 
 
 @Slf4j
-public abstract class JsonWebTokenProvider<U extends User, R extends Role> {
+public abstract class JsonWebTokenProvider {
     public static final String BEARER_TOKEN_HEADER = "X-Authorization";
 
     protected static final Long EXPIRE_SOON_RATIO_DIVIDE = 2L; // 발급 시간 의 절반이 지났을 경우
@@ -49,7 +49,7 @@ public abstract class JsonWebTokenProvider<U extends User, R extends Role> {
     }
 
 
-    public abstract String createToken(HttpServletRequest request, HttpServletResponse response, U user, List<R> roles);
+    public abstract String createToken(HttpServletRequest request, HttpServletResponse response, User user, List<Role> roles);
 
     protected String generateToken(Claims claims) {
         LocalDateTime now = LocalDateTime.now();

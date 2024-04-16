@@ -2,19 +2,19 @@ package xyz.needpainkiller.api.workingday.dao;
 
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
-import xyz.needpainkiller.api.workingday.model.HolidayEntity;
+import xyz.needpainkiller.api.workingday.model.Holiday;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface HolidayRepo extends JpaRepository<HolidayEntity, Long> {
+public interface HolidayRepo extends JpaRepository<Holiday, Long> {
     @Override
-    Optional<HolidayEntity> findById(@NotNull Long holidayPk);
+    Optional<Holiday> findById(@NotNull Long holidayPk);
 
-    Optional<HolidayEntity> findByUuid(String uuid);
+    Optional<Holiday> findByUuid(String uuid);
 
     @Override
-    List<HolidayEntity> findAll();
+    List<Holiday> findAll();
 
-    List<HolidayEntity> findAllByTenantPk(Long tenantPk);
+    List<Holiday> findAllByTenantPk(Long tenantPk);
 }

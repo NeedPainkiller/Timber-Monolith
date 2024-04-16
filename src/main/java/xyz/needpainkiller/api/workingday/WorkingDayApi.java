@@ -10,8 +10,8 @@ import jakarta.validation.constraints.NotBlank;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import xyz.needpainkiller.base.workingday.dto.WorkingDay;
-import xyz.needpainkiller.base.workingday.dto.WorkingDayRequests;
+import xyz.needpainkiller.api.workingday.dto.WorkingDay;
+import xyz.needpainkiller.api.workingday.dto.WorkingDayRequests;
 
 import java.util.Map;
 

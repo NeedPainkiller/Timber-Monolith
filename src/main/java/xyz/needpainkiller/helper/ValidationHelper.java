@@ -2,8 +2,8 @@ package xyz.needpainkiller.helper;
 
 import lombok.experimental.UtilityClass;
 import org.apache.logging.log4j.util.Strings;
-import xyz.needpainkiller.base.authentication.error.PasswordException;
-import xyz.needpainkiller.base.user.error.UserException;
+import xyz.needpainkiller.api.authentication.error.PasswordException;
+import xyz.needpainkiller.api.user.error.UserException;
 import xyz.needpainkiller.lib.exceptions.BusinessException;
 
 import java.util.regex.Matcher;

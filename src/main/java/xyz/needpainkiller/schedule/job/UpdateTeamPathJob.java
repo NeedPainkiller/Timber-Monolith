@@ -4,9 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.QuartzJobBean;
-import xyz.needpainkiller.api.team.model.TeamEntity;
-import xyz.needpainkiller.base.team.TeamService;
-import xyz.needpainkiller.base.team.model.Team;
+import xyz.needpainkiller.api.team.TeamService;
 
 @Slf4j
 public final class UpdateTeamPathJob extends QuartzJobBean implements InterruptableJob {
@@ -17,7 +15,7 @@ public final class UpdateTeamPathJob extends QuartzJobBean implements Interrupta
     private volatile Thread currThread;
 
     @Autowired
-    private TeamService<? extends Team> teamService;
+    private TeamService teamService;
 
     @Override
     public void interrupt() throws UnableToInterruptJobException {

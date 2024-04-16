@@ -10,7 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import xyz.needpainkiller.base.file.error.FileException;
+import xyz.needpainkiller.api.file.error.FileException;
+import xyz.needpainkiller.api.file.model.Files;
 import xyz.needpainkiller.helper.FileHelper;
 import xyz.needpainkiller.helper.HttpHelper;
 
@@ -26,7 +27,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static xyz.needpainkiller.base.file.error.FileErrorCode.*;
+import static xyz.needpainkiller.api.file.error.FileErrorCode.*;
 
 /**
  * Local File 저장소 서비스
@@ -36,7 +37,7 @@ import static xyz.needpainkiller.base.file.error.FileErrorCode.*;
 
 @Slf4j
 @Service
-public class SecureStorageService<T extends xyz.needpainkiller.base.file.model.File> extends DefaultStorageService<T> {
+public class SecureStorageService extends DefaultStorageService {
     private final SecretKey fileCipherSecretKey;
     private final Cipher fileCipher;
     private final List<String> restrictList;
@@ -58,12 +59,12 @@ public class SecureStorageService<T extends xyz.needpainkiller.base.file.model.F
     }
 
     @Override
-    public synchronized List<T> upload(HttpServletRequest request) {
+    public synchronized List<Files> upload(HttpServletRequest request) {
         boolean isMultipart = HttpHelper.isMultipartContent(request);
         if (!isMultipart) {
             throw new FileException(FILE_UPLOAD_IS_NOT_MULTIPART);
         }
-        List<T> uuidList = new ArrayList<>();
+        List<Files> uuidList = new ArrayList<>();
 
         try {
             Collection<Part> parts = request.getParts();
@@ -71,7 +72,7 @@ public class SecureStorageService<T extends xyz.needpainkiller.base.file.model.F
             mkdir();
             for (Part part : parts) {
                 String filename = part.getSubmittedFileName();
-                T uploadInfo = generateFileInfo(filename);
+                Files uploadInfo = generateFileInfo(filename);
                 String changedFileName = uploadInfo.getChangedFileName();
 
                 FileHelper.checkExtensionRestrict(restrictList, uploadInfo.getFileType());
@@ -107,7 +108,7 @@ public class SecureStorageService<T extends xyz.needpainkiller.base.file.model.F
     }
 
     @Override
-    public synchronized void download(T fileInfo, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public synchronized void download(Files fileInfo, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         String changedFileName = fileInfo.getChangedFileName();
         String originalFileName = fileInfo.getOriginalFileName().trim();

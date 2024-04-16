@@ -2,8 +2,8 @@ package xyz.needpainkiller.api.audit.dao;
 
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
-import xyz.needpainkiller.api.audit.model.AuditLogEntity;
-import xyz.needpainkiller.base.audit.dto.AuditRequests;
+import xyz.needpainkiller.api.audit.dto.AuditRequests;
+import xyz.needpainkiller.api.audit.model.AuditLog;
 import xyz.needpainkiller.common.model.HttpMethod;
 
 import java.sql.Timestamp;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AuditLogSpecification {
-    public static Specification<AuditLogEntity> search(AuditRequests.SearchAuditLogRequest params) {
+    public static Specification<AuditLog> search(AuditRequests.SearchAuditLogRequest params) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicateList = new ArrayList<>();
 

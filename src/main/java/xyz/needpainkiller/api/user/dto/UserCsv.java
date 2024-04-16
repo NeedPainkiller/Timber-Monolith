@@ -6,10 +6,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import xyz.needpainkiller.base.team.model.Team;
-import xyz.needpainkiller.base.user.dto.UserProfile;
-import xyz.needpainkiller.base.user.model.Role;
-import xyz.needpainkiller.base.user.model.User;
+import xyz.needpainkiller.api.team.model.Team;
+import xyz.needpainkiller.api.user.model.Role;
+import xyz.needpainkiller.api.user.model.User;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -49,7 +48,7 @@ public class UserCsv implements Serializable {
     public UserCsv(UserProfile userProfile) {
         User user = userProfile.getUser();
         Team team = userProfile.getTeam();
-        List<? extends Role> roleList = userProfile.getRoleList();
+        List<Role> roleList = userProfile.getRoleList();
         this.userPk = user.getId();
         this.isAdmin = roleList.stream().anyMatch(Role::isAdmin) ? "관리자" : "일반";
         this.userId = user.getUserId();

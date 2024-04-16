@@ -8,18 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-import xyz.needpainkiller.api.team.model.TeamEntity;
+import xyz.needpainkiller.api.authentication.AuthenticationService;
 import xyz.needpainkiller.api.user.dto.UserCsv;
-import xyz.needpainkiller.api.user.model.RoleEntity;
-import xyz.needpainkiller.api.user.model.UserEntity;
-import xyz.needpainkiller.api.user.model.UserRoleMapEntity;
-import xyz.needpainkiller.base.authentication.AuthenticationService;
-import xyz.needpainkiller.base.user.RoleService;
-import xyz.needpainkiller.base.user.UserService;
-import xyz.needpainkiller.base.user.dto.UserProfile;
-import xyz.needpainkiller.base.user.dto.UserRequests;
-import xyz.needpainkiller.base.user.error.RoleException;
-import xyz.needpainkiller.base.user.error.UserException;
+import xyz.needpainkiller.api.user.dto.UserProfile;
+import xyz.needpainkiller.api.user.dto.UserRequests;
+import xyz.needpainkiller.api.user.error.RoleException;
+import xyz.needpainkiller.api.user.error.UserException;
+import xyz.needpainkiller.api.user.model.Role;
+import xyz.needpainkiller.api.user.model.User;
 import xyz.needpainkiller.common.controller.CommonController;
 import xyz.needpainkiller.common.dto.SearchCollectionResult;
 import xyz.needpainkiller.helper.ValidationHelper;
@@ -41,11 +37,11 @@ import static xyz.needpainkiller.lib.exceptions.CommonErrorCode.USER_DELETE_SELF
 @RequiredArgsConstructor
 public class UserController extends CommonController implements UserApi {
     @Autowired
-    private AuthenticationService<UserEntity, RoleEntity> authenticationService;
+    private AuthenticationService authenticationService;
     @Autowired
-    private UserService<UserEntity, RoleEntity, TeamEntity> userService;
+    private UserService userService;
     @Autowired
-    private RoleService<RoleEntity, UserRoleMapEntity> roleService;
+    private RoleService roleService;
     @Autowired
     private SpreadSheetService sheetService;
 
@@ -54,7 +50,7 @@ public class UserController extends CommonController implements UserApi {
         Map<String, Object> model = new HashMap<>();
         Long tenantPk = authenticationService.getTenantPkByToken(request);
         param.setTenantPk(tenantPk);
-        SearchCollectionResult<UserProfile<UserEntity, RoleEntity, TeamEntity>> result = userService.selectUserProfileList(param);
+        SearchCollectionResult<UserProfile> result = userService.selectUserProfileList(param);
         model.put(KEY_LIST, result.getCollection());
         model.put(KEY_TOTAL, result.getFoundRows());
         return ok(model);
@@ -65,8 +61,8 @@ public class UserController extends CommonController implements UserApi {
         Long tenantPk = authenticationService.getTenantPkByToken(request);
         param.setTenantPk(tenantPk);
         param.setIsPagination(false);
-        SearchCollectionResult<UserProfile<UserEntity, RoleEntity, TeamEntity>> result = userService.selectUserProfileList(param);
-        Collection<UserProfile<UserEntity, RoleEntity, TeamEntity>> userProfiles = result.getCollection();
+        SearchCollectionResult<UserProfile> result = userService.selectUserProfileList(param);
+        Collection<UserProfile> userProfiles = result.getCollection();
         List<UserCsv> userCsvList = userProfiles.stream().map(UserCsv::new).toList();
         sheetService.downloadExcel(UserCsv.class, userCsvList, response);
     }
@@ -75,7 +71,7 @@ public class UserController extends CommonController implements UserApi {
     @Override
     public ResponseEntity<Map<String, Object>> selectUser(Long userPk, HttpServletRequest request) {
         Map<String, Object> model = new HashMap<>();
-        UserProfile<UserEntity, RoleEntity, TeamEntity> userProfile = userService.selectUserProfile(userPk);
+        UserProfile userProfile = userService.selectUserProfile(userPk);
         model.put(KEY_USER, userProfile);
         return ok(model);
     }
@@ -83,8 +79,8 @@ public class UserController extends CommonController implements UserApi {
     @Override
     public ResponseEntity<Map<String, Object>> selectMe(HttpServletRequest request) {
         Map<String, Object> model = new HashMap<>();
-        UserEntity user = authenticationService.getUserByToken(request);
-        UserProfile<UserEntity, RoleEntity, TeamEntity> userProfile = userService.selectUserProfile(user);
+        User user = authenticationService.getUserByToken(request);
+        UserProfile userProfile = userService.selectUserProfile(user);
         model.put(KEY_USER, userProfile);
         return ok(model);
     }
@@ -103,19 +99,19 @@ public class UserController extends CommonController implements UserApi {
     public ResponseEntity<Map<String, Object>> createUser(UserRequests.UpsertUserRequest param, HttpServletRequest request) {
         Map<String, Object> model = new HashMap<>();
 
-        List<RoleEntity> requestRoleList = roleService.selectRolesByPkList(param.getRoles());
+        List<Role> requestRoleList = roleService.selectRolesByPkList(param.getRoles());
         if (requestRoleList.isEmpty()) {
             throw new RoleException(ROLE_NOT_EXIST);
         }
 
-        UserEntity requester = authenticationService.getUserByToken(request);
+        User requester = authenticationService.getUserByToken(request);
         Long tenantPk = authenticationService.getTenantPkByToken(request);
         param.setTenantPk(tenantPk);
-        List<RoleEntity> authority = authenticationService.getRoleListByToken(request);
+        List<Role> authority = authenticationService.getRoleListByToken(request);
         roleService.checkRequestRoleAuthority(requestRoleList, authority);
 
-        UserEntity savedUser = userService.createUser(param, requestRoleList, requester);
-        UserProfile<UserEntity, RoleEntity, TeamEntity> userProfile = userService.selectUserProfile(savedUser);
+        User savedUser = userService.createUser(param, requestRoleList, requester);
+        UserProfile userProfile = userService.selectUserProfile(savedUser);
         model.put(KEY_USER, userProfile);
         model.put(KEY_ROLE_LIST, userProfile.getRoleList());
         return status(HttpStatus.CREATED).body(model);
@@ -124,18 +120,18 @@ public class UserController extends CommonController implements UserApi {
     @Override
     public ResponseEntity<Map<String, Object>> updateUser(Long userPk, UserRequests.UpsertUserRequest param, HttpServletRequest request) {
         Map<String, Object> model = new HashMap<>();
-        List<RoleEntity> requestRoleList = roleService.selectRolesByPkList(param.getRoles());
+        List<Role> requestRoleList = roleService.selectRolesByPkList(param.getRoles());
         if (requestRoleList.isEmpty()) {
             throw new RoleException(ROLE_NOT_EXIST);
         }
-        UserEntity requester = authenticationService.getUserByToken(request);
+        User requester = authenticationService.getUserByToken(request);
         Long tenantPk = authenticationService.getTenantPkByToken(request);
         param.setTenantPk(tenantPk);
-        List<RoleEntity> authority = authenticationService.getRoleListByToken(request);
+        List<Role> authority = authenticationService.getRoleListByToken(request);
         roleService.checkRequestRoleAuthority(requestRoleList, authority);
 
-        UserEntity savedUser = userService.updateUser(userPk, param, requestRoleList, requester);
-        UserProfile<UserEntity, RoleEntity, TeamEntity> userDetail = userService.selectUserProfile(savedUser);
+        User savedUser = userService.updateUser(userPk, param, requestRoleList, requester);
+        UserProfile userDetail = userService.selectUserProfile(savedUser);
         model.put(KEY_USER, userDetail);
         model.put(KEY_ROLE_LIST, userDetail.getRoleList());
         return status(HttpStatus.CREATED).body(model);
@@ -144,7 +140,7 @@ public class UserController extends CommonController implements UserApi {
     @Override
     public ResponseEntity<Map<String, Object>> deleteUser(Long userPk, HttpServletRequest request) throws UserException {
         Map<String, Object> model = new HashMap<>();
-        UserEntity requester = authenticationService.getUserByToken(request);
+        User requester = authenticationService.getUserByToken(request);
         if (userPk.equals(requester.getId())) {
             throw new UserException(USER_DELETE_SELF);
         }

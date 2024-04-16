@@ -1,7 +1,7 @@
 package xyz.needpainkiller.api.tenant.dto;
 
 import lombok.*;
-import xyz.needpainkiller.base.user.dto.RoleRequests;
+import xyz.needpainkiller.api.user.dto.RoleRequests;
 
 import java.io.Serial;
 import java.io.Serializable;

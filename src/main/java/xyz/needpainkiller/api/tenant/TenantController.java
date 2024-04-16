@@ -8,24 +8,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-import xyz.needpainkiller.api.authentication.model.ApiEntity;
-import xyz.needpainkiller.api.authentication.model.DivisionEntity;
-import xyz.needpainkiller.api.authentication.model.MenuEntity;
-import xyz.needpainkiller.api.team.model.TeamEntity;
-import xyz.needpainkiller.api.tenant.model.TenantEntity;
-import xyz.needpainkiller.api.user.model.RoleEntity;
-import xyz.needpainkiller.api.user.model.UserEntity;
-import xyz.needpainkiller.api.user.model.UserRoleMapEntity;
-import xyz.needpainkiller.base.authentication.AuthenticationService;
-import xyz.needpainkiller.base.authentication.AuthorizationService;
-import xyz.needpainkiller.base.tenant.TenantService;
-import xyz.needpainkiller.base.tenant.dto.TenantRequests;
-import xyz.needpainkiller.base.tenant.error.TenantException;
-import xyz.needpainkiller.base.tenant.model.Tenant;
-import xyz.needpainkiller.base.user.RoleService;
-import xyz.needpainkiller.base.user.UserService;
-import xyz.needpainkiller.base.user.dto.UserProfile;
-import xyz.needpainkiller.base.user.model.User;
+import xyz.needpainkiller.api.authentication.AuthenticationService;
+import xyz.needpainkiller.api.authentication.AuthorizationService;
+import xyz.needpainkiller.api.authentication.model.Api;
+import xyz.needpainkiller.api.authentication.model.Division;
+import xyz.needpainkiller.api.team.model.Team;
+import xyz.needpainkiller.api.tenant.dto.TenantRequests;
+import xyz.needpainkiller.api.tenant.error.TenantException;
+import xyz.needpainkiller.api.tenant.model.Tenant;
+import xyz.needpainkiller.api.user.RoleService;
+import xyz.needpainkiller.api.user.UserService;
+import xyz.needpainkiller.api.user.dto.UserProfile;
+import xyz.needpainkiller.api.user.model.Role;
+import xyz.needpainkiller.api.user.model.User;
 import xyz.needpainkiller.common.controller.CommonController;
 
 import java.util.HashMap;
@@ -34,29 +29,29 @@ import java.util.Map;
 
 import static org.springframework.http.ResponseEntity.ok;
 import static org.springframework.http.ResponseEntity.status;
-import static xyz.needpainkiller.base.tenant.error.TenantErrorCode.TENANT_CONFLICT;
+import static xyz.needpainkiller.api.tenant.error.TenantErrorCode.TENANT_CONFLICT;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 public class TenantController extends CommonController implements TenantApi {
     @Autowired
-    private TenantService<TenantEntity> tenantService;
+    private TenantService tenantService;
     @Autowired
-    private AuthenticationService<UserEntity, RoleEntity> authenticationService;
+    private AuthenticationService authenticationService;
     @Autowired
-    private AuthorizationService<DivisionEntity, MenuEntity, ApiEntity, RoleEntity> authorizationService;
+    private AuthorizationService authorizationService;
     @Autowired
-    private UserService<UserEntity, RoleEntity, TeamEntity> userService;
+    private UserService userService;
     @Autowired
-    private RoleService<RoleEntity, UserRoleMapEntity> roleService;
+    private RoleService roleService;
 
     @Override
     public ResponseEntity<Map<String, Object>> selectPublicTenantList(String userId, HttpServletRequest request) {
         Map<String, Object> model = new HashMap<>();
-        List<TenantEntity> tenantList = tenantService.selectPublicTenantList();
+        List<Tenant> tenantList = tenantService.selectPublicTenantList();
         if (userId != null && !userId.isEmpty()) {
-            List<UserEntity> userList = userService.selectUserListByIdLike(userId);
+            List<User> userList = userService.selectUserListByIdLike(userId);
             List<Long> filteredTenantPkList = userList.stream().map(User::getTenantPk).toList();
             tenantList = tenantList.stream().filter(tenant -> filteredTenantPkList.contains(tenant.getId())).toList();
         }
@@ -68,8 +63,8 @@ public class TenantController extends CommonController implements TenantApi {
     public ResponseEntity<Map<String, Object>> selectSwitchableTenantList(HttpServletRequest request) {
         Map<String, Object> model = new HashMap<>();
         List<Long> switchableTenantPkList = authenticationService.getTenantPkListByToken(request);
-        List<TenantEntity> tenantList = tenantService.selectTenantList();
-        List<TenantEntity> switchableTenantList = tenantList.stream().filter(tenant -> switchableTenantPkList.contains(tenant.getId())).toList();
+        List<Tenant> tenantList = tenantService.selectTenantList();
+        List<Tenant> switchableTenantList = tenantList.stream().filter(tenant -> switchableTenantPkList.contains(tenant.getId())).toList();
         model.put(KEY_LIST, switchableTenantList);
         return ok(model);
     }
@@ -79,8 +74,8 @@ public class TenantController extends CommonController implements TenantApi {
         Map<String, Object> model = new HashMap<>();
 
         Long tenantPk = authenticationService.getTenantPkByToken(request);
-        List<TenantEntity> tenantList = tenantService.selectTenantList();
-        List<RoleEntity> authority = authenticationService.getRoleListByToken(request);
+        List<Tenant> tenantList = tenantService.selectTenantList();
+        List<Role> authority = authenticationService.getRoleListByToken(request);
         if (!roleService.hasSystemAdminRole(authority)) {
             tenantList = tenantList.stream().filter(tenant -> tenant.filterByTenant(tenantPk)).toList();
         }
@@ -99,7 +94,7 @@ public class TenantController extends CommonController implements TenantApi {
     @Override
     public ResponseEntity<Map<String, Object>> createTenant(TenantRequests.CreateTenantRequest param, HttpServletRequest request) {
         Map<String, Object> model = new HashMap<>();
-        List<RoleEntity> authority = authenticationService.getRoleListByToken(request);
+        List<Role> authority = authenticationService.getRoleListByToken(request);
         if (!roleService.hasSystemAdminRole(authority)) {
             return status(HttpStatus.FORBIDDEN).body(model);
         }
@@ -114,7 +109,7 @@ public class TenantController extends CommonController implements TenantApi {
     public ResponseEntity<Map<String, Object>> updateTenant(Long tenantPk, TenantRequests.UpdateTenantRequest param, HttpServletRequest request) {
         Map<String, Object> model = new HashMap<>();
 
-        List<RoleEntity> authority = authenticationService.getRoleListByToken(request);
+        List<Role> authority = authenticationService.getRoleListByToken(request);
         if (!roleService.hasSystemAdminRole(authority)) {
             Long userTenantPk = authenticationService.getTenantPkByToken(request);
             if (!tenantPk.equals(userTenantPk)) {
@@ -133,7 +128,7 @@ public class TenantController extends CommonController implements TenantApi {
     public ResponseEntity<Map<String, Object>> deleteTenant(Long tenantPk, HttpServletRequest request) {
         Map<String, Object> model = new HashMap<>();
 
-        List<RoleEntity> authority = authenticationService.getRoleListByToken(request);
+        List<Role> authority = authenticationService.getRoleListByToken(request);
         if (!roleService.hasSystemAdminRole(authority)) {
             Long userTenantPk = authenticationService.getTenantPkByToken(request);
             if (!tenantPk.equals(userTenantPk)) {
@@ -149,7 +144,7 @@ public class TenantController extends CommonController implements TenantApi {
     @Override
     public ResponseEntity<Map<String, Object>> switchTenant(Long tenantPk, HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> model = new HashMap<>();
-        UserEntity requester = authenticationService.getUserByToken(request);
+        User requester = authenticationService.getUserByToken(request);
 
         List<Long> switchableTenantPkList = authenticationService.getTenantPkListByToken(request);
         if (switchableTenantPkList.stream().noneMatch(pk -> pk.equals(tenantPk))) {
@@ -159,17 +154,17 @@ public class TenantController extends CommonController implements TenantApi {
         Long userPk = requester.getId();
         requester = userService.selectUser(userPk);
         try {
-            UserProfile<UserEntity, RoleEntity, TeamEntity> userProfile = userService.selectUserProfile(requester);
+            UserProfile userProfile = userService.selectUserProfile(requester);
             model.put(KEY_USER, requester);
-            TeamEntity team = userProfile.getTeam();
+            Team team = userProfile.getTeam();
             model.put(KEY_TEAM, team);
-            List<RoleEntity> roleList = userProfile.getRoleList();
+            List<Role> roleList = userProfile.getRoleList();
             model.put(KEY_ROLE_LIST, roleList);
-            List<DivisionEntity> divisionList = authorizationService.selectDivisionByRoleList(roleList);
+            List<Division> divisionList = authorizationService.selectDivisionByRoleList(roleList);
             model.put(KEY_MENU_LIST, divisionList);
-            List<ApiEntity> apiList = authorizationService.selectApiListByRoleList(roleList);
+            List<Api> apiList = authorizationService.selectApiListByRoleList(roleList);
             model.put(KEY_API_LIST, apiList);
-            List<ApiEntity> publicApiList = authorizationService.selectPublicApiList();
+            List<Api> publicApiList = authorizationService.selectPublicApiList();
             model.put(KEY_PUBLIC_API_LIST, publicApiList);
         } finally {
             model.put(KEY_TOKEN, authenticationService.createToken(request, response, requester));

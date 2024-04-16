@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
-import xyz.needpainkiller.api.audit.model.AuditLogEntity;
+import xyz.needpainkiller.api.audit.model.AuditLog;
 import xyz.needpainkiller.helper.TimeHelper;
 
 import java.io.Serial;
@@ -82,7 +82,7 @@ public class AuditLogCsv implements Serializable {
     @JsonProperty(value = "API 이름", index = 92)
     private String apiName;
 
-    public AuditLogCsv(AuditLogEntity log) {
+    public AuditLogCsv(AuditLog log) {
         this.id = log.getId();
         this.httpStatus = log.getHttpStatus();
         this.httpMethod = log.getHttpMethod().name();

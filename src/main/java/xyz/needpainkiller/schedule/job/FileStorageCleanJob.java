@@ -6,9 +6,8 @@ import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.quartz.QuartzJobBean;
-import xyz.needpainkiller.api.file.model.FileEntity;
-import xyz.needpainkiller.base.file.FileService;
-import xyz.needpainkiller.base.file.model.File;
+import xyz.needpainkiller.api.file.FileService;
+import xyz.needpainkiller.api.file.model.Files;
 import xyz.needpainkiller.helper.TimeHelper;
 import xyz.needpainkiller.lib.storage.LocalStorageService;
 
@@ -27,9 +26,9 @@ public final class FileStorageCleanJob extends QuartzJobBean implements Interrup
 
     private static final int SQL_WHERE_IN_LIMIT = 2000;
     @Autowired
-    private FileService<FileEntity> fileService;
+    private FileService fileService;
     @Autowired
-    private LocalStorageService<FileEntity> localStorageService;
+    private LocalStorageService localStorageService;
 
 
     @Value("${file.delete-expired-file-limit}")
@@ -77,12 +76,12 @@ public final class FileStorageCleanJob extends QuartzJobBean implements Interrup
                 fileService.upsertFileExists(allExistFileUuid);
             }
 
-            List<FileEntity> removedFileInfoList;
+            List<Files> removedFileInfoList;
 // 2. (불필요 && 스토리지 내 존재)하는 파일 삭제
-            List<FileEntity> notUsedFileInfoList = fileService.selectFileNotUsed();
+            List<Files> notUsedFileInfoList = fileService.selectFileNotUsed();
             removedFileInfoList = localStorageService.remove(notUsedFileInfoList);
             fileService.deleteServiceFile(removedFileInfoList);
-            try (Stream<FileEntity> fileInfoStream = removedFileInfoList.stream()) {
+            try (Stream<Files> fileInfoStream = removedFileInfoList.stream()) {
                 fileInfoStream.parallel().forEach(fileInfo -> log.info("NotUsedFile : {}", fileInfo.getChangedFileName()));
             }
 
@@ -91,13 +90,13 @@ public final class FileStorageCleanJob extends QuartzJobBean implements Interrup
             long nowMillisecond = now.getTime();
             long fileExpiredLimitMillisecond = fileExpiredLimitDay * 24 * 60 * 60 * 1000;
 
-            Predicate<FileEntity> predicateExpiredFile = file -> {
+            Predicate<Files> predicateExpiredFile = file -> {
                 Timestamp createdDate = file.getCreatedDate();
                 long createdDateMillisecond = createdDate.getTime();
                 return nowMillisecond - createdDateMillisecond >= fileExpiredLimitMillisecond;
             };
 
-            List<FileEntity> jobCaptureFileList = fileService.selectServiceFileList(fileServiceNameJobCapture)
+            List<Files> jobCaptureFileList = fileService.selectServiceFileList(fileServiceNameJobCapture)
                     .stream()
                     .filter(predicateExpiredFile).toList();
             fileService.deleteServiceFile(jobCaptureFileList);
@@ -105,8 +104,8 @@ public final class FileStorageCleanJob extends QuartzJobBean implements Interrup
             removedFileInfoList = localStorageService.remove(jobCaptureFileList);
             fileService.deleteServiceFile(removedFileInfoList);
 
-            List<Long> jobIdList = jobCaptureFileList.stream().map(File::getFileServiceId).toList();
-            try (Stream<FileEntity> fileInfoStream = removedFileInfoList.stream()) {
+            List<Long> jobIdList = jobCaptureFileList.stream().map(Files::getFileServiceId).toList();
+            try (Stream<Files> fileInfoStream = removedFileInfoList.stream()) {
                 fileInfoStream.parallel().forEach(fileInfo -> log.info("ExpiredFile : {}", fileInfo.getChangedFileName()));
             }
 

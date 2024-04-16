@@ -3,17 +3,17 @@ package xyz.needpainkiller.api.user.dao;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import xyz.needpainkiller.api.user.model.UserEntity;
+import xyz.needpainkiller.api.user.model.User;
 
 import java.util.List;
 
-public interface UserRepo extends JpaRepository<UserEntity, Long>, JpaSpecificationExecutor<UserEntity> {
-    List<UserEntity> findAll();
+public interface UserRepo extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
+    List<User> findAll();
 
-    List<UserEntity> findAllByIdIn(List<Long> idList);
+    List<User> findAllByIdIn(List<Long> idList);
 
 
-    UserEntity findUserById(@NotNull Long userPk);
+    User findUserById(@NotNull Long userPk);
 
-    List<UserEntity> findUserByUserId(String userId);
+    List<User> findUserByUserId(String userId);
 }

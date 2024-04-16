@@ -11,8 +11,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
-import xyz.needpainkiller.base.user.model.Role;
-import xyz.needpainkiller.base.user.model.User;
+import xyz.needpainkiller.api.user.model.Role;
+import xyz.needpainkiller.api.user.model.User;
 import xyz.needpainkiller.lib.security.JwtDoubleChecker;
 import xyz.needpainkiller.lib.security.error.TokenValidFailedException;
 import xyz.needpainkiller.lib.security.secret.JsonWebTokenSecretKeyManager;
@@ -25,7 +25,7 @@ import static xyz.needpainkiller.lib.exceptions.CommonErrorCode.*;
 @Profile({"jwt-header"})
 @Slf4j
 @Component
-public class HeaderJsonWebTokenProvider<U extends User, R extends Role> extends JsonWebTokenProvider<U, R> {
+public class HeaderJsonWebTokenProvider extends JsonWebTokenProvider {
 
 
     public HeaderJsonWebTokenProvider(
@@ -36,7 +36,7 @@ public class HeaderJsonWebTokenProvider<U extends User, R extends Role> extends 
     }
 
     @Override
-    public String createToken(HttpServletRequest request, HttpServletResponse response, U user, List<R> roles) {
+    public String createToken(HttpServletRequest request, HttpServletResponse response, User user, List<Role> roles) {
         try {
             Long tenantPk = user.getTenantPk();
             Long userPk = user.getId();

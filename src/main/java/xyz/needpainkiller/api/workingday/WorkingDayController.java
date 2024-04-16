@@ -8,14 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+import xyz.needpainkiller.api.authentication.AuthenticationService;
+import xyz.needpainkiller.api.user.model.User;
 import xyz.needpainkiller.api.workingday.dto.HolidayCsv;
-import xyz.needpainkiller.api.workingday.model.HolidayEntity;
-import xyz.needpainkiller.base.authentication.AuthenticationService;
-import xyz.needpainkiller.base.user.model.User;
-import xyz.needpainkiller.base.workingday.WorkingDayService;
-import xyz.needpainkiller.base.workingday.dto.WorkingDay;
-import xyz.needpainkiller.base.workingday.dto.WorkingDayRequests;
-import xyz.needpainkiller.base.workingday.model.Holiday;
+import xyz.needpainkiller.api.workingday.dto.WorkingDay;
+import xyz.needpainkiller.api.workingday.dto.WorkingDayRequests;
+import xyz.needpainkiller.api.workingday.model.Holiday;
 import xyz.needpainkiller.common.controller.CommonController;
 import xyz.needpainkiller.lib.sheet.SpreadSheetService;
 
@@ -36,7 +34,7 @@ public class WorkingDayController extends CommonController implements WorkingDay
     protected static final String KEY_HOLIDAY_LIST = "holidayList";
 
     @Autowired
-    private WorkingDayService<HolidayEntity> workingDayService;
+    private WorkingDayService workingDayService;
     @Autowired
     private AuthenticationService authenticationService;
     @Autowired
@@ -54,7 +52,7 @@ public class WorkingDayController extends CommonController implements WorkingDay
     public ResponseEntity<Map<String, Object>> selectHolidayList(HttpServletRequest request) {
         Map<String, Object> model = new HashMap<>();
         Long tenantPk = authenticationService.getTenantPkByToken(request);
-        List<HolidayEntity> holidayList = workingDayService.selectHolidayList(tenantPk);
+        List<Holiday> holidayList = workingDayService.selectHolidayList(tenantPk);
         model.put(KEY_HOLIDAY_LIST, holidayList);
         return ok(model);
     }
@@ -91,7 +89,7 @@ public class WorkingDayController extends CommonController implements WorkingDay
     @Override
     public void downloadHolidayList(HttpServletRequest request, HttpServletResponse response) {
         Long tenantPk = authenticationService.getTenantPkByToken(request);
-        List<HolidayEntity> holidayList = workingDayService.selectHolidayList(tenantPk);
+        List<Holiday> holidayList = workingDayService.selectHolidayList(tenantPk);
         List<HolidayCsv> holidayCsvList = holidayList.stream().map(HolidayCsv::new).toList();
         sheetService.downloadExcel(HolidayCsv.class, holidayCsvList, response);
     }

@@ -3,30 +3,30 @@ package xyz.needpainkiller.api.file.dao;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import xyz.needpainkiller.api.file.model.FileEntity;
-import xyz.needpainkiller.base.file.model.FileServiceType;
+import xyz.needpainkiller.api.file.model.FileServiceType;
+import xyz.needpainkiller.api.file.model.Files;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public interface FileRepo extends JpaRepository<FileEntity, Long> {
+public interface FileRepo extends JpaRepository<Files, Long> {
 
-    List<FileEntity> findAllBy();
+    List<Files> findAllBy();
 
-    Optional<FileEntity> findByUuid(String uuid);
+    Optional<Files> findByUuid(String uuid);
 
-    List<FileEntity> findByUuidIn(List<String> uuid);
+    List<Files> findByUuidIn(List<String> uuid);
 
-    Stream<FileEntity> streamByUuidIn(List<String> uuid);
+    Stream<Files> streamByUuidIn(List<String> uuid);
 
-    List<FileEntity> findByUseYnFalse();
+    List<Files> findByUseYnFalse();
 
-    List<FileEntity> findByFileService(String fileService);
+    List<Files> findByFileService(String fileService);
 
-    List<FileEntity> findByFileServiceAndFileServiceId(String fileService, Long fileServiceId);
+    List<Files> findByFileServiceAndFileServiceId(String fileService, Long fileServiceId);
 
-    List<FileEntity> findByFileServiceAndFileServiceIdAndFileServiceType(String fileService, Long fileServiceId, FileServiceType fileServiceType);
+    List<Files> findByFileServiceAndFileServiceIdAndFileServiceType(String fileService, Long fileServiceId, FileServiceType fileServiceType);
 
     @Modifying(clearAutomatically = true)
     @Query(value = "UPDATE FILES SET FILE_EXISTS = 0", nativeQuery = true)

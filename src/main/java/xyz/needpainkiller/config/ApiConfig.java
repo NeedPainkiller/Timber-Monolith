@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.web.servlet.DispatcherServletAutoC
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import xyz.needpainkiller.base.audit.AuditService;
+import xyz.needpainkiller.api.audit.AuditService;
 import xyz.needpainkiller.lib.api.ApiDispatcherServlet;
 
 import java.util.Collections;

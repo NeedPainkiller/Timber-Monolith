@@ -9,7 +9,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import xyz.needpainkiller.base.tenant.dto.TenantRequests;
+import xyz.needpainkiller.api.tenant.dto.TenantRequests;
 
 import java.util.Map;
 

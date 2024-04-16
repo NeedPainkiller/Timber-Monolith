@@ -10,20 +10,20 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import xyz.needpainkiller.base.file.error.FileException;
+import xyz.needpainkiller.api.file.error.FileException;
+import xyz.needpainkiller.api.file.model.Files;
 import xyz.needpainkiller.helper.FileHelper;
 import xyz.needpainkiller.helper.HttpHelper;
 
 import java.io.*;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static xyz.needpainkiller.base.file.error.FileErrorCode.*;
+import static xyz.needpainkiller.api.file.error.FileErrorCode.*;
 
 /**
  * Local File 저장소 서비스
@@ -33,7 +33,7 @@ import static xyz.needpainkiller.base.file.error.FileErrorCode.*;
 
 @Slf4j
 @Service
-public class LocalStorageService<T extends xyz.needpainkiller.base.file.model.File> extends DefaultStorageService<T> {
+public class LocalStorageService extends DefaultStorageService {
 
     private final List<String> restrictList;
 
@@ -51,12 +51,12 @@ public class LocalStorageService<T extends xyz.needpainkiller.base.file.model.Fi
 
 
     @Override
-    public synchronized List<T> upload(HttpServletRequest request) {
+    public synchronized List<Files> upload(HttpServletRequest request) {
         boolean isMultipart = HttpHelper.isMultipartContent(request);
         if (!isMultipart) {
             throw new FileException(FILE_UPLOAD_IS_NOT_MULTIPART);
         }
-        List<T> uuidList = new ArrayList<>();
+        List<Files> uuidList = new ArrayList<>();
         try {
             Collection<Part> parts = request.getParts();
             validateParts(parts);
@@ -64,7 +64,7 @@ public class LocalStorageService<T extends xyz.needpainkiller.base.file.model.Fi
 
             for (Part part : parts) {
                 String filename = part.getSubmittedFileName();
-                T uploadInfo = generateFileInfo(filename);
+                Files uploadInfo = generateFileInfo(filename);
                 String changedFileName = uploadInfo.getChangedFileName();
 
                 FileHelper.checkExtensionRestrict(restrictList, uploadInfo.getFileType());
@@ -73,7 +73,7 @@ public class LocalStorageService<T extends xyz.needpainkiller.base.file.model.Fi
                 Path path = file.toPath();
 
                 try (InputStream fileInputStream = part.getInputStream();) {
-                    Files.copy(fileInputStream, path, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+                    java.nio.file.Files.copy(fileInputStream, path, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
                 }
                 uploadInfo.setFileSize(file.exists() ? file.length() : 0);
                 uuidList.add(uploadInfo);
@@ -87,7 +87,7 @@ public class LocalStorageService<T extends xyz.needpainkiller.base.file.model.Fi
     }
 
     @Override
-    public synchronized void download(T fileInfo, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public synchronized void download(Files fileInfo, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         String changedFileName = fileInfo.getChangedFileName();
         String originalFileName = fileInfo.getOriginalFileName().trim();

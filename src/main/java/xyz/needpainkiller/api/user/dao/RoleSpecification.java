@@ -2,8 +2,8 @@ package xyz.needpainkiller.api.user.dao;
 
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
-import xyz.needpainkiller.api.user.model.RoleEntity;
-import xyz.needpainkiller.base.user.dto.RoleRequests;
+import xyz.needpainkiller.api.user.dto.RoleRequests;
+import xyz.needpainkiller.api.user.model.Role;
 import xyz.needpainkiller.common.dto.DateType;
 
 import java.sql.Timestamp;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RoleSpecification {
-    public static Specification<RoleEntity> search(RoleRequests.SearchRoleRequest params) {
+    public static Specification<Role> search(RoleRequests.SearchRoleRequest params) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicateList = new ArrayList<>();
 

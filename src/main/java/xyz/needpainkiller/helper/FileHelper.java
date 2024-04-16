@@ -2,13 +2,13 @@ package xyz.needpainkiller.helper;
 
 import lombok.experimental.UtilityClass;
 import org.springframework.web.multipart.MultipartFile;
-import xyz.needpainkiller.base.file.error.FileException;
+import xyz.needpainkiller.api.file.error.FileException;
 
 import java.util.List;
 import java.util.Objects;
 
-import static xyz.needpainkiller.base.file.error.FileErrorCode.FILE_INVALID_NAME_FAILED;
-import static xyz.needpainkiller.base.file.error.FileErrorCode.FILE_RESTRICT_EXTENSION;
+import static xyz.needpainkiller.api.file.error.FileErrorCode.FILE_INVALID_NAME_FAILED;
+import static xyz.needpainkiller.api.file.error.FileErrorCode.FILE_RESTRICT_EXTENSION;
 
 
 @UtilityClass

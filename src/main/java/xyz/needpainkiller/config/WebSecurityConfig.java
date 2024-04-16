@@ -26,10 +26,8 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import xyz.needpainkiller.base.authentication.AuthenticationService;
-import xyz.needpainkiller.base.authentication.AuthorizationChecker;
-import xyz.needpainkiller.base.user.model.Role;
-import xyz.needpainkiller.base.user.model.User;
+import xyz.needpainkiller.api.authentication.AuthenticationService;
+import xyz.needpainkiller.api.authentication.AuthorizationChecker;
 import xyz.needpainkiller.lib.api.filter.ApiFilter;
 import xyz.needpainkiller.lib.security.JwtAuthenticationFilter;
 
@@ -46,7 +44,7 @@ public class WebSecurityConfig {
     private String API_PATTERN;
 
     @Autowired
-    private AuthenticationService<? extends User, ? extends Role> authenticationService;
+    private AuthenticationService authenticationService;
     @Autowired
     private AuthorizationChecker authorizationChecker;
     @Autowired

@@ -7,7 +7,7 @@ import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.servlet.DispatcherServlet;
-import xyz.needpainkiller.base.audit.AuditService;
+import xyz.needpainkiller.api.audit.AuditService;
 import xyz.needpainkiller.common.model.HttpMethod;
 import xyz.needpainkiller.helper.HttpHelper;
 import xyz.needpainkiller.lib.security.provider.JsonWebTokenProvider;

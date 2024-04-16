@@ -7,15 +7,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-import xyz.needpainkiller.api.file.model.FileEntity;
-import xyz.needpainkiller.base.authentication.AuthenticationService;
-import xyz.needpainkiller.base.file.FileService;
-import xyz.needpainkiller.base.file.error.FileException;
-import xyz.needpainkiller.base.file.model.FileAuthorityType;
-import xyz.needpainkiller.base.user.RoleService;
-import xyz.needpainkiller.base.user.UserService;
-import xyz.needpainkiller.base.user.model.Role;
-import xyz.needpainkiller.base.user.model.User;
+import xyz.needpainkiller.api.authentication.AuthenticationService;
+import xyz.needpainkiller.api.file.error.FileException;
+import xyz.needpainkiller.api.file.model.FileAuthorityType;
+import xyz.needpainkiller.api.file.model.Files;
+import xyz.needpainkiller.api.user.RoleService;
+import xyz.needpainkiller.api.user.UserService;
+import xyz.needpainkiller.api.user.model.Role;
+import xyz.needpainkiller.api.user.model.User;
 import xyz.needpainkiller.common.controller.CommonController;
 import xyz.needpainkiller.helper.HttpHelper;
 import xyz.needpainkiller.lib.security.error.TokenValidFailedException;
@@ -28,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.springframework.http.ResponseEntity.ok;
-import static xyz.needpainkiller.base.file.error.FileErrorCode.*;
+import static xyz.needpainkiller.api.file.error.FileErrorCode.*;
 
 @Slf4j
 @RestController
@@ -38,19 +37,19 @@ public class FileController extends CommonController implements FileApi {
     @Autowired
     private AuthenticationService authenticationService;
     @Autowired
-    private FileService<FileEntity> fileService;
+    private FileService fileService;
     @Autowired
     private UserService userService;
     @Autowired
     private RoleService roleService;
     @Autowired
-    private LocalStorageService<FileEntity> localStorageService;
+    private LocalStorageService localStorageService;
     @Autowired
-    private SecureStorageService<FileEntity> secureStorageService;
+    private SecureStorageService secureStorageService;
 
     public ResponseEntity<Map<String, Object>> uploadFile(final HttpServletRequest request) {
         Map<String, Object> model = new HashMap<>();
-        List<FileEntity> fileList = localStorageService.upload(request);
+        List<Files> fileList = localStorageService.upload(request);
         User user = authenticationService.getUserByToken(request);
         fileList = fileService.createFileWithUpload(fileList, user);
         model.put(KEY_FILE_LIST, fileList);
@@ -59,7 +58,7 @@ public class FileController extends CommonController implements FileApi {
 
 
     public void downloadFile(String uuid, HttpServletRequest request, HttpServletResponse response) {
-        FileEntity file = fileService.selectFile(uuid);
+        Files file = fileService.selectFile(uuid);
         fileService.validateFile(file);
 
         FileAuthorityType fileAuthorityType = file.getAccessAuthority();
@@ -92,14 +91,14 @@ public class FileController extends CommonController implements FileApi {
         }
         Map<String, Object> model = new HashMap<>();
         User user = authenticationService.getUserByToken(request);
-        List<FileEntity> fileList = secureStorageService.upload(request);
+        List<Files> fileList = secureStorageService.upload(request);
         fileList = fileService.createFileWithUpload(fileList, user);
         model.put(KEY_FILE_LIST, fileList);
         return ok(model);
     }
 
     public void downloadSecureFile(String uuid, HttpServletRequest request, HttpServletResponse response) {
-        FileEntity file = fileService.selectFile(uuid);
+        Files file = fileService.selectFile(uuid);
         fileService.validateFile(file);
 
         FileAuthorityType fileAuthorityType = file.getAccessAuthority();
@@ -134,7 +133,7 @@ public class FileController extends CommonController implements FileApi {
         Map<String, Object> model = new HashMap<>();
 
         User user = userService.selectSystemUser();
-        List<FileEntity> fileList = secureStorageService.upload(request);
+        List<Files> fileList = secureStorageService.upload(request);
         fileList = fileService.createFileWithUpload(fileList, user);
 
         model.put(KEY_FILE_LIST, fileList);

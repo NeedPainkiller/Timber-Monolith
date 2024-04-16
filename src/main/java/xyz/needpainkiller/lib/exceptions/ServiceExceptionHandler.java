@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import static xyz.needpainkiller.base.file.error.FileErrorCode.FILE_INVALID_NAME_FAILED;
+import static xyz.needpainkiller.api.file.error.FileErrorCode.FILE_INVALID_NAME_FAILED;
 
 
 @Slf4j

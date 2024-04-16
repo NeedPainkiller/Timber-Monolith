@@ -10,13 +10,13 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
-import xyz.needpainkiller.base.file.error.FileException;
+import xyz.needpainkiller.api.file.error.FileException;
+import xyz.needpainkiller.api.file.model.Files;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileStore;
 import java.nio.file.FileSystems;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -26,10 +26,10 @@ import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import static xyz.needpainkiller.base.file.error.FileErrorCode.*;
+import static xyz.needpainkiller.api.file.error.FileErrorCode.*;
 
 @Slf4j
-public abstract class DefaultStorageService<T extends xyz.needpainkiller.base.file.model.File> {
+public abstract class DefaultStorageService {
     private static final Predicate<String> judgeUUID = uuidStr -> {
         try {
             UUID.fromString(uuidStr);
@@ -98,7 +98,7 @@ public abstract class DefaultStorageService<T extends xyz.needpainkiller.base.fi
      *
      * @param request HttpServletRequest 객체
      */
-    abstract List<T> upload(HttpServletRequest request);
+    abstract List<Files> upload(HttpServletRequest request);
 
     /**
      * 파일 다운로드
@@ -107,7 +107,7 @@ public abstract class DefaultStorageService<T extends xyz.needpainkiller.base.fi
      * @param request  HttpServletRequest 객체
      * @param response HttpServletResponse 객체
      */
-    abstract void download(T file, HttpServletRequest request, HttpServletResponse response) throws IOException;
+    abstract void download(Files file, HttpServletRequest request, HttpServletResponse response) throws IOException;
 
     public String getRealPathToSaved() {
         return realPathToSaved;
@@ -118,7 +118,7 @@ public abstract class DefaultStorageService<T extends xyz.needpainkiller.base.fi
         try {
             NumberFormat nf = NumberFormat.getNumberInstance();
             Path fileStorePath = FileSystems.getDefault().getPath(realPathToSaved);
-            FileStore store = Files.getFileStore(fileStorePath);
+            FileStore store = java.nio.file.Files.getFileStore(fileStorePath);
             log.info("UsableSpace | available= {}, total={}", nf.format(store.getUsableSpace()), nf.format(store.getTotalSpace()));
             usableSpace = store.getUsableSpace();
         } catch (IOException e) {
@@ -140,7 +140,7 @@ public abstract class DefaultStorageService<T extends xyz.needpainkiller.base.fi
      * @param fileList 파일 도메인 객체 리스트
      * @return 삭제된 파일 리스트
      */
-    public List<T> remove(List<T> fileList) {
+    public List<Files> remove(List<Files> fileList) {
         if (CollectionUtils.isEmpty(fileList)) {
             return new ArrayList<>();
         }
@@ -154,17 +154,17 @@ public abstract class DefaultStorageService<T extends xyz.needpainkiller.base.fi
      * @param file 파일 도메인 객체
      * @return 삭제여부
      */
-    public Boolean remove(T file) {
+    public Boolean remove(Files file) {
         return removeRealFile(file);
     }
 
-    private boolean removeRealFile(T file) {
+    private boolean removeRealFile(Files file) {
         String changedFileName = file.getChangedFileName();
         Path savedFile = FileSystems.getDefault().getPath(realPathToSaved, changedFileName);
-        boolean exists = Files.exists(savedFile);
+        boolean exists = java.nio.file.Files.exists(savedFile);
         if (exists) {
             try {
-                return Files.deleteIfExists(savedFile);
+                return java.nio.file.Files.deleteIfExists(savedFile);
             } catch (IOException e) {
                 log.error("Failed Delete File IOException : {}", e.getMessage());
                 return false;
@@ -178,9 +178,9 @@ public abstract class DefaultStorageService<T extends xyz.needpainkiller.base.fi
     public List<String> findAllExistFileUuid() {
         try {
             Path fileStorePath = FileSystems.getDefault().getPath(realPathToSaved);
-            try (Stream<Path> stream = Files.list(fileStorePath)) {
+            try (Stream<Path> stream = java.nio.file.Files.list(fileStorePath)) {
                 List<String> allExistFile = stream
-                        .filter(file -> !Files.isDirectory(file))
+                        .filter(file -> !java.nio.file.Files.isDirectory(file))
                         .map(Path::getFileName)
                         .map(Path::toString)
                         .map(FilenameUtils::removeExtension)
@@ -206,18 +206,18 @@ public abstract class DefaultStorageService<T extends xyz.needpainkiller.base.fi
         });
     }
 
-    protected T generateFileInfo(MultipartFile multipartFile) {
-        T file = generateFileInfo(multipartFile.getOriginalFilename());
+    protected Files generateFileInfo(MultipartFile multipartFile) {
+        Files file = generateFileInfo(multipartFile.getOriginalFilename());
         file.setFileSize(multipartFile.getSize());
         return file;
     }
 
-    protected T generateFileInfo(String fileName) {
+    protected Files generateFileInfo(String fileName) {
         String uuid = UUID.randomUUID().toString();
         String fileExtension = FileNameUtils.getExtension(fileName);
         String changedFileName = uuid + '.' + fileExtension;
 
-        T file = (T) new xyz.needpainkiller.base.file.model.File();
+        Files file = new Files();
         file.setUuid(uuid);
         file.setFileType(fileExtension);
         file.setOriginalFileName(fileName);

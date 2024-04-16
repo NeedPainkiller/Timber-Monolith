@@ -10,9 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
-import xyz.needpainkiller.base.authentication.AuthenticationService;
-import xyz.needpainkiller.base.user.model.Role;
-import xyz.needpainkiller.base.user.model.User;
+import xyz.needpainkiller.api.authentication.AuthenticationService;
 import xyz.needpainkiller.lib.exceptions.ApiErrorResponse;
 import xyz.needpainkiller.lib.exceptions.BusinessException;
 import xyz.needpainkiller.lib.exceptions.ErrorCode;
@@ -34,9 +32,9 @@ import static xyz.needpainkiller.helper.HttpHelper.convertObjectToJson;
 @Slf4j
 public class JwtAuthenticationFilter extends GenericFilterBean {
 
-    private final AuthenticationService<? extends User, ? extends Role> authenticationService;
+    private final AuthenticationService authenticationService;
 
-    public JwtAuthenticationFilter(AuthenticationService<? extends User, ? extends Role> authenticationService) {
+    public JwtAuthenticationFilter(AuthenticationService authenticationService) {
         this.authenticationService = authenticationService;
     }
 
