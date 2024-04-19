@@ -168,5 +168,4 @@ public abstract class JsonWebTokenProvider {
             throw new TokenValidFailedException(TOKEN_CLAIM_PARSE_FAILED, e.getMessage());
         }
     }
-
-}
+ }

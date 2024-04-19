@@ -178,8 +178,7 @@ public class KafkaAuditService implements AuditService {
         auditLogMessage.setErrorData(errorData);
 
 
-        log.info("kafka send auditLogMessage : {}", auditLogMessage);
-        template.send("auditLogMessages", auditLogMessage);
+        template.send("timber__topic-audit-api", auditLogMessage);
     }
 
     @Override
@@ -259,7 +258,7 @@ public class KafkaAuditService implements AuditService {
         }
         auditLogMessage.setErrorData(errorData);
 
-        template.send("loginLogMessages", auditLogMessage);
+        template.send("timber__topic-audit-login", auditLogMessage);
     }
 }
 

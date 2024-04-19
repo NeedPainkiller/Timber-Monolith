@@ -125,16 +125,14 @@ public class FileService {
 
 
     @Transactional
-    public Files createFileWithUpload(Files files, User user) throws FileException {
+     public Files createFileFromMessageQueue(Files files) throws FileException {
         validateFileUpload(files);
         String uuid = files.getUuid();
         Optional<Files> existFile = fileRepo.findByUuid(uuid);
         if (existFile.isPresent()) {
             throw new FileException(FILE_UPLOAD_INFO_ALREADY_EXIST, files.getOriginalFileName());
         }
-
         files.setUseYn(true);
-        files.setCreatedBy(user.getId());
         files.setCreatedDate(TimeHelper.now());
         files.setDownloadCnt(0);
         files.setFileService(DEF_FILE_SERVICE_NAME);
@@ -175,7 +173,6 @@ public class FileService {
         files.setDownloadCnt(files.getDownloadCnt() + 1);
         fileRepo.save(files);
     }
-
 
 
     @Transactional
@@ -227,7 +224,6 @@ public class FileService {
     }
 
 
-
     @Transactional
     public void deleteServiceFile(Files files) {
         files.setUseYn(false);
@@ -240,7 +236,6 @@ public class FileService {
         filesList.forEach(fileEntity -> fileEntity.setUseYn(false));
         fileRepo.saveAll(filesList);
     }
-
 
 
     @Transactional
