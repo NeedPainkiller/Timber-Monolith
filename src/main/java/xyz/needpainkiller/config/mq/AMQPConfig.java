@@ -1,4 +1,4 @@
-package xyz.needpainkiller.config;
+package xyz.needpainkiller.config.mq;
 
 import com.rabbitmq.client.ShutdownSignalException;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +23,7 @@ import xyz.needpainkiller.lib.amqp.Receiver;
 @EnableRabbit
 @Slf4j
 public class AMQPConfig {
-    private static final String topicExchangeName = "timberl-exchange";
+    private static final String topicExchangeName = "timber-exchange";
 
     @Bean
     public DirectExchange exchange() {
