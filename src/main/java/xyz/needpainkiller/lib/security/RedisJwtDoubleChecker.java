@@ -19,7 +19,7 @@ import static xyz.needpainkiller.lib.exceptions.ServiceErrorCode.REDIS_CONNECTIO
  * JWT 이중 로그인 방지
  * REDIS 서버의 {botstore:user:tokens} 에 접근하여 토큰 중복 여부를 확인
  *
- * @author ywkang-rbrain
+ * @author needpainkiller
  */
 
 //@Component

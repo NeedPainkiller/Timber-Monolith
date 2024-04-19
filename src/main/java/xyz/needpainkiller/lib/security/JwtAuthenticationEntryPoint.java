@@ -18,7 +18,7 @@ import java.io.PrintWriter;
  * WebSecurityConfigurerAdapter 구현체에서 authenticationEntryPoint 로 등록
  * commence 에서 401 UNAUTHORIZED 응답 처리 (ErrorCode 는 TOKEN_VALIDATION_FAILED)
  *
- * @author ywkang-rbrain
+ * @author needpainkiller
  */
 
 @Slf4j

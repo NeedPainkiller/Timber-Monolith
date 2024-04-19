@@ -44,7 +44,7 @@ public class AuthenticationRequests {
         @Schema(description = "인증용 UUID", example = "e39a320d-79c7-47a6-842a-faaf0b85f108!", required = true)
         private String uuid;
         @NotBlank
-        @Schema(description = "패스워드(10자 이상, 1개 이상의 숫자 혹은 패스워드)", example = "Rainbow2021!", required = true)
+        @Schema(description = "패스워드(10자 이상, 1개 이상의 숫자 혹은 패스워드)", example = "test1234!", required = true)
         private String password;
     }
 }

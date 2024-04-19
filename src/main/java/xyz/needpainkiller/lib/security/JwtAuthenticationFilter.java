@@ -26,7 +26,7 @@ import static xyz.needpainkiller.helper.HttpHelper.convertObjectToJson;
  * WebSecurityConfigurerAdapter 구현체에서 addFilterBefore 로 등록
  * AUTH_EVERYONE_WHITELIST 에 등록된 URI 도 해당 Filter 를 거치므로 Try-catch 하여 chain 을 수행할 수 있도록 처리해야함
  *
- * @author ywkang-rbrain
+ * @author needpainkiller
  */
 
 @Slf4j

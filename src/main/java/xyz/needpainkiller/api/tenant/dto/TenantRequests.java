@@ -58,10 +58,10 @@ public class TenantRequests {
         private Boolean visibleYn = true;
         private final Boolean defaultYn = false;
         @NotBlank
-        @Schema(description = "테넌트 이름", example = "레인보우브레인2", required = true)
+        @Schema(description = "테넌트 이름", example = "A회사", required = true)
         private String title;
         @NotBlank
-        @Schema(description = "라벨명", example = "Rainbow Brain2", required = true)
+        @Schema(description = "라벨명", example = "A회사 라벨", required = true)
         private String label;
         @NotBlank
         @Schema(description = "회사 URL", example = "http://needpainkiller.co.kr", required = true)
@@ -97,10 +97,10 @@ public class TenantRequests {
         @Schema(description = "기본 테넌트 여부", example = "true / false", required = true)
         private Boolean defaultYn = false;
         @NotBlank
-        @Schema(description = "회사 이름", example = "레인보우브레인2", required = true)
+        @Schema(description = "회사 이름", example = "A회사", required = true)
         private String title;
         @NotBlank
-        @Schema(description = "라벨명", example = "Rainbow Brain2", required = true)
+        @Schema(description = "라벨명", example = "A회사 라벨", required = true)
         private String label;
         @NotBlank
         @Schema(description = "회사 URL", example = "http://needpainkiller.co.kr", required = true)

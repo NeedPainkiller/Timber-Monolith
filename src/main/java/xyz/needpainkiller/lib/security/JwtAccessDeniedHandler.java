@@ -15,7 +15,7 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
  * WebSecurityConfigurerAdapter 구현체에서 accessDeniedHandler 로 등록
  * ControllerAdvice 에서 AccessDeniedException 으로 FORBIDDEN 응답 처리
  *
- * @author ywkang-rbrain
+  * @author needpainkiller
  */
 
 @Slf4j
