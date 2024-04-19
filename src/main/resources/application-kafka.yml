@@ -1,8 +1,8 @@
 spring:
   kafka:
-    bootstrap-servers: 192.168.0.14:29092
+    bootstrap-servers:
     producer:
-      bootstrap-servers: 192.168.0.14:29092
+      bootstrap-servers:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 #      client-id: kafka-test-producer
@@ -10,7 +10,7 @@ spring:
         delivery.timeout.ms: 120000
         linger.ms: 0
     consumer:
-      bootstrap-servers: 192.168.0.14:29092
+      bootstrap-servers:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
