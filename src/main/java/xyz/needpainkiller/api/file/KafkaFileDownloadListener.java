@@ -17,8 +17,8 @@ import xyz.needpainkiller.api.file.model.Files;
 @Profile("kafka")
 @Slf4j
 @Component
-@KafkaListener(groupId = "timber", topics = "timber__topic-file-stored")
-public class KafkaFileListener {
+@KafkaListener(groupId = "timber", topics = "timber__topic-file-downloaded")
+public class KafkaFileDownloadListener {
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -31,8 +31,7 @@ public class KafkaFileListener {
         try {
             Files files = objectMapper.readValue(inputString, Files.class);
             log.info(" Received: {}", files);
-            files = fileService.createFileFromMessageQueue(files);
-            log.info(" Saved: {}", files);
+            fileService.increaseFileDownloadCnt(files);
         } catch (JsonProcessingException e) {
             log.error("Error processing message", e);
         }
