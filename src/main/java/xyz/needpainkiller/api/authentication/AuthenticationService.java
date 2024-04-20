@@ -10,9 +10,11 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import xyz.needpainkiller.api.team.model.Team;
 import xyz.needpainkiller.api.tenant.error.TenantException;
 import xyz.needpainkiller.api.user.RoleService;
 import xyz.needpainkiller.api.user.UserService;
+import xyz.needpainkiller.api.user.dto.UserProfile;
 import xyz.needpainkiller.api.user.error.RoleException;
 import xyz.needpainkiller.api.user.error.UserException;
 import xyz.needpainkiller.api.user.model.Role;
@@ -40,16 +42,8 @@ public class AuthenticationService implements UserDetailsService {
 //    @Qualifier("headerJsonWebTokenProvider")
     private JsonWebTokenProvider jsonWebTokenProvider;
 
-
-    public String createToken(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-        SecurityUser securityUser = (SecurityUser) authentication.getPrincipal();
-        return createToken(request, response, securityUser.getUser());
-    }
-
-
-    public String createToken(HttpServletRequest request, HttpServletResponse response, User user) {
-        List<Role> roleList = roleService.selectRolesByUser(user);
-        return jsonWebTokenProvider.createToken(request, response, user, roleList);
+    public String createToken(HttpServletRequest request, HttpServletResponse response, User user, List<Role> roleList, Team team) {
+        return jsonWebTokenProvider.createToken(request, response, user, roleList, team);
     }
 
 
@@ -63,7 +57,10 @@ public class AuthenticationService implements UserDetailsService {
         Authentication authentication = getAuthentication(request);
         SecurityUser securityUser = (SecurityUser) authentication.getPrincipal();
         User user = securityUser.getUser();
-        return createToken(request, response, user);
+        UserProfile userProfile = userService.selectUserProfile(user);
+        List<Role> roleList = userProfile.getRoleList();
+        Team team = userProfile.getTeam();
+        return createToken(request, response, user, roleList, team);
     }
 
 

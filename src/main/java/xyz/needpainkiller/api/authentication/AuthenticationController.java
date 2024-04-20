@@ -86,12 +86,14 @@ public class AuthenticationController extends CommonController implements Authen
         }
         user = securityUser.getUser();
         Map<String, Object> model = new HashMap<>();
+         Team team = null;
+        List<Role> roleList = null;
         try {
             UserProfile userProfile = userService.selectUserProfile(user);
             model.put(KEY_USER, user);
-            Team team = userProfile.getTeam();
+            team = userProfile.getTeam();
             model.put(KEY_TEAM, team);
-            List<Role> roleList = userProfile.getRoleList();
+            roleList = userProfile.getRoleList();
             model.put(KEY_ROLE_LIST, roleList);
             List<Division> divisionList = authorizationService.selectDivisionByRoleList(roleList);
             model.put(KEY_MENU_LIST, divisionList);
@@ -102,7 +104,7 @@ public class AuthenticationController extends CommonController implements Authen
 
             auditService.insertLoginAuditLog(request, userProfile);
         } finally {
-            model.put(KEY_TOKEN, authenticationService.createToken(request, response, user));
+            model.put(KEY_TOKEN, authenticationService.createToken(request, response, user , roleList, team));
             userService.updateLastLoginDate(user.getId());
         }
         return ok(model);

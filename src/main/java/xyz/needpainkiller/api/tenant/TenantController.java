@@ -153,12 +153,14 @@ public class TenantController extends CommonController implements TenantApi {
 
         Long userPk = requester.getId();
         requester = userService.selectUser(userPk);
+        Team team = null;
+        List<Role> roleList = null;
         try {
             UserProfile userProfile = userService.selectUserProfile(requester);
             model.put(KEY_USER, requester);
-            Team team = userProfile.getTeam();
+            team = userProfile.getTeam();
             model.put(KEY_TEAM, team);
-            List<Role> roleList = userProfile.getRoleList();
+            roleList = userProfile.getRoleList();
             model.put(KEY_ROLE_LIST, roleList);
             List<Division> divisionList = authorizationService.selectDivisionByRoleList(roleList);
             model.put(KEY_MENU_LIST, divisionList);
@@ -167,7 +169,7 @@ public class TenantController extends CommonController implements TenantApi {
             List<Api> publicApiList = authorizationService.selectPublicApiList();
             model.put(KEY_PUBLIC_API_LIST, publicApiList);
         } finally {
-            model.put(KEY_TOKEN, authenticationService.createToken(request, response, requester));
+            model.put(KEY_TOKEN, authenticationService.createToken(request, response, requester, roleList, team));
         }
         return ok(model);
     }

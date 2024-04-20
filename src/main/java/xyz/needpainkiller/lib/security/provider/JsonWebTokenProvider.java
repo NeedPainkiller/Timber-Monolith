@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
+import xyz.needpainkiller.api.team.model.Team;
 import xyz.needpainkiller.api.user.model.Role;
 import xyz.needpainkiller.api.user.model.User;
 import xyz.needpainkiller.helper.TimeHelper;
@@ -33,8 +34,11 @@ public abstract class JsonWebTokenProvider {
     protected static final String KEY_TENANT_PK = "tenant-pk";
     protected static final String KEY_USER_PK = "user-pk";
     protected static final String KEY_USER_ID = "user-id";
+    protected static final String KEY_USER_NAME = "user-name";
     protected static final String KEY_USER_EMAIL = "user-email";
     protected static final String KEY_ROLE_LIST = "role-list";
+    protected static final String KEY_TEAM_PK = "team-pk";
+    protected static final String KEY_TEAM_NAME = "team-name";
 
     protected final JwtDoubleChecker jwtDoubleChecker;
     protected final SecretKey secretKey;
@@ -49,7 +53,7 @@ public abstract class JsonWebTokenProvider {
     }
 
 
-    public abstract String createToken(HttpServletRequest request, HttpServletResponse response, User user, List<Role> roles);
+    public abstract String createToken(HttpServletRequest request, HttpServletResponse response, User user, List<Role> roles, Team team);
 
     protected String generateToken(Claims claims) {
         LocalDateTime now = LocalDateTime.now();
@@ -116,6 +120,38 @@ public abstract class JsonWebTokenProvider {
         return getClaimFromToken(token, Claims::getSubject);
     }
 
+    public String getUserName(String token) {
+        Object claim = getClaimFromToken(token, claims -> claims.get(KEY_USER_NAME));
+        if (claim == null) {
+            throw new TokenValidFailedException(TOKEN_CLAIM_TENANT_NOT_EXIST);
+        }
+        return claim.toString();
+    }
+
+    public String getUserEmail(String token) {
+        Object claim = getClaimFromToken(token, claims -> claims.get(KEY_USER_EMAIL));
+        if (claim == null) {
+            throw new TokenValidFailedException(TOKEN_CLAIM_TENANT_NOT_EXIST);
+        }
+        return claim.toString();
+    }
+
+    public Long getTeamPk(String token) {
+        Object claim = getClaimFromToken(token, claims -> claims.get(KEY_TEAM_PK));
+        if (claim == null) {
+            throw new TokenValidFailedException(TOKEN_CLAIM_TENANT_NOT_EXIST);
+        }
+        return ((Integer) claim).longValue();
+    }
+
+    public String getTeamName(String token) {
+        Object claim = getClaimFromToken(token, claims -> claims.get(KEY_TEAM_NAME));
+        if (claim == null) {
+            throw new TokenValidFailedException(TOKEN_CLAIM_TENANT_NOT_EXIST);
+        }
+        return claim.toString();
+    }
+
     public List<String> getRole(HttpServletRequest request) {
         return getRole(resolveToken(request));
     }
@@ -168,4 +204,4 @@ public abstract class JsonWebTokenProvider {
             throw new TokenValidFailedException(TOKEN_CLAIM_PARSE_FAILED, e.getMessage());
         }
     }
- }
+}

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
+import xyz.needpainkiller.api.team.model.Team;
 import xyz.needpainkiller.api.user.model.Role;
 import xyz.needpainkiller.api.user.model.User;
 import xyz.needpainkiller.lib.security.JwtDoubleChecker;
@@ -43,7 +44,7 @@ public class HttpsCookieJsonWebTokenProvider extends JsonWebTokenProvider {
     private static final String JWT_COOKIE_NAME = "JSON_WEB_TOKEN";
 
     @Override
-    public String createToken(HttpServletRequest request, HttpServletResponse response, User user, List<Role> roles) {
+    public String createToken(HttpServletRequest request, HttpServletResponse response, User user, List<Role> roles, Team team) {
         try {
             Long tenantPk = user.getTenantPk();
             Long userPk = user.getId();
@@ -53,8 +54,11 @@ public class HttpsCookieJsonWebTokenProvider extends JsonWebTokenProvider {
             claims.put(KEY_TENANT_PK, tenantPk);
             claims.put(KEY_USER_PK, userPk);
             claims.put(KEY_USER_ID, userId);
+            claims.put(KEY_USER_NAME, user.getUserName());
             claims.put(KEY_USER_EMAIL, user.getUserEmail());
             claims.put(KEY_ROLE_LIST, roleList);
+            claims.put(KEY_TEAM_PK, team.getId());
+            claims.put(KEY_TEAM_NAME, team.getTeamName());
             String token = generateToken(claims);
             Cookie tokenCookie = createCookie(token);
             response.addCookie(tokenCookie);
