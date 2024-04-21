@@ -35,9 +35,13 @@ public class AuditLog implements Serializable {
     @Column(name = "_ID", unique = true, nullable = false, columnDefinition = "bigint")
     @Getter
     private Long id;
-    @Column(name = "TENANT_PK")
+    @Column(name = "TENANT_PK", columnDefinition = "bigint")
     @Getter
     private Long tenantPk;
+    @Convert(converter = BooleanConverter.class)
+    @Column(name = "VISIBLE_YN", columnDefinition = "tinyint default 0")
+    @Getter
+    private boolean visibleYn;
     @Column(name = "HTTP_STATUS", columnDefinition = "default 0")
     @Getter
     private Integer httpStatus;
@@ -60,22 +64,23 @@ public class AuditLog implements Serializable {
     @Column(name = "AGENT_DEVICE", columnDefinition = "nvarchar(128)")
     @Getter
     private String agentDevice;
-    @Convert(converter = InetConverter.class)
-    @Column(name = "REQUEST_IP", columnDefinition = "numeric(20,0)")
-    @Getter
-    private String requestIp;
     @Column(name = "REQUEST_URI", columnDefinition = "nvarchar(256)")
     @Getter
     private String requestUri;
-    @Column(name = "REQUEST_CONTENT_TYPE", columnDefinition = "nvarchar(32)")
+//    @Convert(converter = InetConverter.class)
+//    @Column(name = "REQUEST_IP", columnDefinition = "numeric(20,0)")
+    @Column(name = "REQUEST_IP", columnDefinition = "char(45)")
+    @Getter
+    private String requestIp;
+    @Column(name = "REQUEST_CONTENT_TYPE", columnDefinition = "nvarchar(128)")
     @Getter
     private String requestContentType;
-    @Column(name = "REQUEST_PAYLOAD", columnDefinition = "nvarchar")
+    @Column(name = "REQUEST_PAYLOAD", columnDefinition = "longtext")
     private String requestPayLoad;
-    @Column(name = "RESPONSE_CONTENT_TYPE", columnDefinition = "nvarchar(32)")
+    @Column(name = "RESPONSE_CONTENT_TYPE", columnDefinition = "nvarchar(128)")
     @Getter
     private String responseContentType;
-    @Column(name = "RESPONSE_PAYLOAD", columnDefinition = "nvarchar")
+    @Column(name = "RESPONSE_PAYLOAD", columnDefinition = "longtext")
     private String responsePayLoad;
     @Column(name = "CREATED_DATE", columnDefinition = "datetime2(0) default CURRENT_TIMESTAMP")
     @CreationTimestamp
@@ -115,10 +120,5 @@ public class AuditLog implements Serializable {
     @Getter
     @Convert(converter = JsonToMapConverter.class)
     private Map<String, Serializable> errorData;
-
-    @Convert(converter = BooleanConverter.class)
-    @Column(name = "VISIBLE_YN", columnDefinition = "tinyint default 0")
-    @Getter
-    private boolean visibleYn;
 
 }

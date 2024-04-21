@@ -25,6 +25,7 @@ public class AuditLogMessage implements Serializable {
     private static final long serialVersionUID = -1384789622264912736L;
 
     private Long id;
+    private boolean visibleYn;
     private Long tenantPk;
     private Integer httpStatus;
     private HttpMethod httpMethod;
@@ -51,6 +52,5 @@ public class AuditLogMessage implements Serializable {
     private Long apiUid;
     private String apiName;
     private Map<String, Serializable> errorData;
-    private boolean visibleYn;
 
 }
