@@ -461,7 +461,6 @@ https://github.com/NeedPainkiller/Timber-Monolith.git
         |   mail-education-answer.html
         |   mail-employee-subscribe-accepted.html
         |   mail-execution-failed.html
-        |   mail-rpa-archives-trigger.html
         |   mail-task-petition-notification-sample.html
         |   mail-task-petition-notification.html
         |   mail-temp-password-updated.html

@@ -85,7 +85,7 @@ public final class FileStorageCleanJob extends QuartzJobBean implements Interrup
                 fileInfoStream.parallel().forEach(fileInfo -> log.info("NotUsedFile : {}", fileInfo.getChangedFileName()));
             }
 
-// 3. RPA JOB 스크린샷 정기 삭제
+// 3.  정기 삭제
             Timestamp now = TimeHelper.now();
             long nowMillisecond = now.getTime();
             long fileExpiredLimitMillisecond = fileExpiredLimitDay * 24 * 60 * 60 * 1000;
