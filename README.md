@@ -24,7 +24,7 @@
 </p>
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
-This project uses Spring Boot with Java21 and Gradle7.2.1
+This project uses Spring Boot with OpenJDK 21 and Gradle7.2.1
 
 This project is a monolithic architecture that is deprecated. The new Timber Application project can be found in the following [this repositroy](https://github.com/NeedPainkiller/Timber).
 
@@ -44,62 +44,29 @@ Log processing backend service for [Timber](https://github.com/NeedPainkiller/Ti
 - <img src="https://img.shields.io/badge/Gradle-02303A?style=flat-square&logo=gradle&logoColor=white"/>
 ## Installation
 ```bash
-git clone 
+https://github.com/NeedPainkiller/Timber-Monolith.git
 ```
 
-## Running the app
+## Running on IntelliJ IDEA
 
 ```bash
-```
+# VM Options
+-server -Dspring.profiles.active=local,mariadb,jwt-header,ehcache,kafka -Djava.net.preferIPv4Stack=true -Dlog4j2.formatMsgNoLookups=true -Xms1024m -Xmx1024m -XX:MaxNewSize=384m -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=./logs/java_pid<pid>.hprof -XX:ParallelGCThreads=2 -Xlog:gc:./logs/gclog
 
-## Test
-
-```bash
-# unit tests
-npm run test
-
-# e2e tests
-npm run test:e2e
-
-# test coverage
-npm run test:cov
+# development
+./.run/TIMBER-LOCAL-MARIADB.run.xml
 ```
 
 ## Build
 ```Bash
 # Build 
-npm run build
+gradle bootJar
 ```
-## Docker
+
+## Run Jar
 ```Bash
-# create ".env" file
-
-## Database (MariaDB)
-DB_DIALECT=mariadb
-DB_HOST=x.y.z
-DB_PORT=3306
-DB_NAME=timber-audit
-DB_USERNAME=timber
-DB_PASSWORD=passwd
-
-## Message Queue (Kafka)
-KAFKA_BROKERS=x.x.x.x:9092,y.y.y.y:2909,z.z.z.z:9092
-KAFKA_ID=timber-sawmill
-KAFKA_GROUP_ID=timber-sawmill-group
+java -jar build/libs/Timber-0.0.1-SNAPSHOT.jar
 ```
-
-
-```Bash
-# Build Dockerfile
-docker build . -t timber-sawmill
-
-# Run Dockerfile
-docker container run -d -p 3000:3000 -v ./.env:/var/app/.env nest-docker 
-```
-
-## Support
-
-Timber-Sawmill is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
 
 ## Stay in touch
 <p>
@@ -115,4 +82,4 @@ Timber-Sawmill is an MIT-licensed open source project. It can grow thanks to the
 
 ## License
 
-Timber-Sawmill is [MIT licensed](LICENSE).
+Timber is [MIT licensed](LICENSE)
