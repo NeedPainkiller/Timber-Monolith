@@ -28,11 +28,11 @@ This project uses Spring Boot with OpenJDK 21 and Gradle7.2.1
 
 This project is a monolithic architecture that is deprecated. The new Timber Application project can be found in the following [this repositroy](https://github.com/NeedPainkiller/Timber).
 
-If you want to learn more about [Timber](https://github.com/NeedPainkiller/Timber), please visit its Blog: https://blog.needpainkiller.xyz
+If you want to learn more about [Timber](https://github.com/NeedPainkiller/Timber-Monolith), please visit its Blog: https://blog.needpainkiller.xyz
 
 
 ## Description
-Log processing backend service for [Timber](https://github.com/NeedPainkiller/Timber) Framework
+Main Backend service for [Timber](https://github.com/NeedPainkiller/Timber-Monolith) Framework
 ## Requirements
 - <img src="https://img.shields.io/badge/Java-67493A?style=flat-square&logo=OpenJDK&logoColor=white"/>
 - <img src="https://img.shields.io/badge/Spring%20Boot-6DB33F?style=flat-square&logo=SpringBoot&logoColor=white"/>
