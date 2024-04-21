@@ -282,17 +282,6 @@ jwt:
 #  userName:
 #  password:
 
-bootstrap:
-  enabled: true
-  url: http://localhost:8080
-  default:
-    tenant-name: default
-    user-name: admin
-    password: qwer1234!
-    role-name: ROLE_ADMIN
-    team-name: ADMIN_GROUP
-
-
 rpa:
   system-user: 1
   # RPA 과제 엄격 모드 (과제 스크립트 유효성 체크)
@@ -318,7 +307,7 @@ springfox.documentation.enabled: false
 statistics:
   start-epoch-day: 18293 #  20200101
 
-version: '2.0.0-20221214'
+version: '1.0.0-202402'
 
 
 springdoc:
