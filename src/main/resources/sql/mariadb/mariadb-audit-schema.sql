@@ -1,3 +1,5 @@
+use `timber-sawmill`;
+
 CREATE TABLE audit_log
 (
     `_ID`                 bigint AUTO_INCREMENT                                    NOT NULL,

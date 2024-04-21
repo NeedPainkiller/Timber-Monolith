@@ -1,4 +1,4 @@
-
+use `timber-application`;
 CREATE TABLE IF NOT EXISTS TENANT
 (
     `_ID`        bigint AUTO_INCREMENT NOT NULL,
