@@ -158,7 +158,7 @@ public class TimeHelper {
         return diff;
     }
 
-    public static long parseRunningTime(Timestamp start, Timestamp end) {
+    public long parseRunningTime(Timestamp start, Timestamp end) {
         return calcTurnaroundTimeMillisecond(start.getTime(), end.getTime());
     }
 

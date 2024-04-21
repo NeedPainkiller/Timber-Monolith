@@ -26,6 +26,7 @@ import xyz.needpainkiller.api.user.error.UserException;
 import xyz.needpainkiller.api.user.model.User;
 import xyz.needpainkiller.common.model.HttpMethod;
 import xyz.needpainkiller.helper.HttpHelper;
+import xyz.needpainkiller.helper.TimeHelper;
 import xyz.needpainkiller.lib.exceptions.ApiErrorResponse;
 import xyz.needpainkiller.lib.security.error.TokenValidFailedException;
 
@@ -138,6 +139,7 @@ public class KafkaAuditService implements AuditService {
                 auditLogMessage.setResponsePayLoad(responsePayload);
 //                auditLog.setResponsePayLoad(CompressHelper.compressString(responsePayload));
             }
+            auditLogMessage.setCreatedDate(TimeHelper.now());
 
             if (series != null && (series.equals(HttpStatus.Series.CLIENT_ERROR) || series.equals(HttpStatus.Series.SERVER_ERROR))) {
                 errorData = objectMapper.readValue(responsePayload, Map.class);
@@ -235,6 +237,8 @@ public class KafkaAuditService implements AuditService {
         }
         auditLogMessage.setRequestPayLoad(requestPayload);
         auditLogMessage.setResponsePayLoad(null);
+
+        auditLogMessage.setCreatedDate(TimeHelper.now());
 
         if (userProfile != null) {
             Long userPk = userProfile.getUserPk();

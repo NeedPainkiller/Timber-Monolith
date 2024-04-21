@@ -43,7 +43,6 @@ public class ApiDispatcherServlet extends DispatcherServlet {
 
         int statusCode = response.getStatus();
         HttpMethod httpMethod = HttpMethod.nameOf(request.getMethod());
-        boolean methodHasPayload = HttpMethod.hasPayload(httpMethod);
 
         String requestURI = request.getRequestURI();
         String userAgent = request.getHeader("user-agent");
@@ -52,7 +51,7 @@ public class ApiDispatcherServlet extends DispatcherServlet {
         String requestContentType = request.getContentType();
         String requestPayload = null;
         if (!Strings.isBlank(requestContentType)) {
-            if (methodHasPayload && requestContentType.startsWith(CONTENT_TYPE_JSON)) {
+            if (requestContentType.startsWith(CONTENT_TYPE_JSON)) {
                 requestPayload = HttpHelper.getRequestPayload(request);
             }
         }
